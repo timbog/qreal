@@ -156,12 +156,11 @@ void TextPicture::readFont(QDomElement const &docItem)
 				fontsize.chop(1);
 				mFont.setPixelSize(fontsize.toInt() / 100);
 			}
-			else if (fontsize.endsWith("a"))
+			else if (fontsize.endsWith("a") || fontsize.endsWith("b"))//qwerty_lsd
 			{
 				fontsize.chop(1);
 				mFont.setPixelSize(fontsize.toInt());
-			}
-			else
+			} else
 				mFont.setPixelSize(fontsize.toInt());
 		}
 

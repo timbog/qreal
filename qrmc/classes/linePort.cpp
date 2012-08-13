@@ -27,6 +27,11 @@ void LinePort::initCoordinate(ScalableCoordinate &field, QString coordinate, int
 		coordinate.remove(coordinate.length() - 1, 1);
 		field = ScalableCoordinate(((qreal) coordinate.toInt()) / maxValue, maxValue, true);
 	}
+	else if (coordinate.endsWith("b"))
+	{
+		coordinate.remove(coordinate.length() - 1, 1);
+		field = ScalableCoordinate(((qreal) coordinate.toInt()) / maxValue, maxValue, false);//qwerty_lsd
+	}
 	else if (coordinate.endsWith("%"))
 	{
 		coordinate.remove(coordinate.length() - 1, 1);

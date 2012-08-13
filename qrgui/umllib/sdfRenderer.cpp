@@ -273,6 +273,11 @@ QPoint *SdfRenderer::getpoints(QDomElement &element, int n)
 			xnum.chop(1);
 			x = xnum.toFloat() + mStartX;
 		}
+		else if (xnum.endsWith("b") && mNeedScale)//qwerty_lsd
+		{
+			xnum.chop(1);
+			x = (current_size_x - abs(first_size_x - xnum.toFloat())) + mStartX;
+		}
 		else if (xnum.endsWith("a") && !mNeedScale)
 		{
 			xnum.chop(1);
@@ -592,7 +597,7 @@ void SdfRenderer::parsestyle(QDomElement &element)
 				fontsize.chop(1);
 				font.setPixelSize(current_size_y * fontsize.toInt() / 100);
 			}
-			else if (fontsize.endsWith("a") && mNeedScale)
+			else if ((fontsize.endsWith("a") || fontsize.endsWith("b")) && mNeedScale) //qwerty_lsd
 			{
 				fontsize.chop(1);
 				font.setPixelSize(fontsize.toInt());
@@ -648,6 +653,12 @@ float SdfRenderer::coord_def(QDomElement &element, QString coordName,
 	{
 		coordStr.chop(1);
 		coord = coordStr.toFloat();
+		return coord;
+	}
+	else if (coordStr.endsWith("b") && mNeedScale)
+	{
+		coordStr.chop(1);
+		coord = abs(current_size - first_size + coordStr.toFloat());
 		return coord;
 	}
 	else if (coordStr.endsWith("a") && !mNeedScale)

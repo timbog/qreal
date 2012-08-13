@@ -174,7 +174,7 @@ void SdfRenderer::draw_text(QDomElement &element)
 			fontsize.chop(1);
 			toGen << "\tfont.setPixelSize(y_def(\"" << fontsize.toInt() << "\"));\n";
 		}
-		else if (fontsize.endsWith("a") && mNeedScale)
+		else if ((fontsize.endsWith("a") || fontsize.endsWith("b")) && mNeedScale) //qwerty_lsd
 		{
 			fontsize.chop(1);
 			toGen << "\tfont.setPixelSize(" << fontsize.toInt() << ");\n";
@@ -298,6 +298,11 @@ QPoint *SdfRenderer::getpoints(QDomElement &element, int n)
 			xnum.chop(1);
 			x = xnum.toFloat() + mStartX;
 		}
+		else if (xnum.endsWith("b") && mNeedScale) //qwerty_lsd
+		{
+			xnum.chop(1);
+			x = (current_size_x - abs(first_size_x - xnum.toFloat())) + mStartX;
+		}
 		else if (xnum.endsWith("a") && !mNeedScale)
 		{
 			xnum.chop(1);
@@ -316,6 +321,11 @@ QPoint *SdfRenderer::getpoints(QDomElement &element, int n)
 		{
 			ynum.chop(1);
 			y = ynum.toFloat() + mStartY;
+		}
+		else if (ynum.endsWith("b") && mNeedScale) //qwerty_lsd
+		{
+			ynum.chop(1);
+			y = (current_size_y - abs(first_size_y - ynum.toFloat())) + mStartY;
 		}
 		else if (ynum.endsWith("a") && !mNeedScale)
 		{

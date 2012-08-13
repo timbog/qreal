@@ -7,6 +7,9 @@ ScalableCoordinate ScalableItem::initCoordinate(QString const &coordinate, int m
 	if (coord.endsWith("a")) {
 		coord.remove(coord.length() - 1, 1);
 		field = ScalableCoordinate((static_cast<qreal>(coord.toInt())) / maxValue, true);
+	} else if (coord.endsWith("b")) {
+		coord.remove(coord.length() - 1, 1);
+		field = ScalableCoordinate((static_cast<qreal>(coord.toInt())) / maxValue, false);//qwerty_lsd
 	} else if (coord.endsWith("%")) {
 		coord.remove(coord.length() - 1, 1);
 		field = ScalableCoordinate((static_cast<qreal>(coord.toInt())) / 100, false);
