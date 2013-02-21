@@ -1,5 +1,6 @@
 #include "outFile.h"
 #include "../qrkernel/exception/exception.h"
+#include <QtCore/QDir>
 
 using namespace utils;
 

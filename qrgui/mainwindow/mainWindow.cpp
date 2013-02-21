@@ -42,6 +42,7 @@
 #include "../dialogs/progressDialog/progressDialog.h"
 
 #include "dotRunner.h"
+#include "../filterobject.h"
 
 using namespace qReal;
 
@@ -129,6 +130,12 @@ MainWindow::MainWindow()
 	initExplorers();
 
 	mStartDialog->exec();
+	FilterObject *obj = new FilterObject();
+	mUi->menuHelp->installEventFilter(obj);
+	mUi->menu_File->installEventFilter(obj);
+	mUi->actionAbout->installEventFilter(obj);
+	mUi->actionAboutQt->installEventFilter(obj);
+	mUi->actionHelp->installEventFilter(obj);
 }
 
 void MainWindow::connectActions()

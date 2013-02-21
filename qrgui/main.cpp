@@ -1,5 +1,6 @@
 #include "mainwindow/mainWindow.h"
 #include "thirdparty/windowsmodernstyle.h"
+#include "../qrutils/usabilityStatistics/usabilityStatistics.h"
 
 #include <QtCore/QtPlugin>
 #include <QtGui/QApplication>
@@ -24,8 +25,9 @@ int main(int argc, char *argv[])
 #endif
 
 	MainWindow window;
+	int exitCode = 0; // The window decided to not show itself, exiting now.
 	if (window.isVisible())
-		return app.exec();
-	else  // The window decided to not show itself, exiting now.
-		return 0;
+		exitCode = app.exec();
+	delete utils::UsabilityStatistics::instance();
+	return exitCode;
 }

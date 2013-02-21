@@ -4,6 +4,7 @@
 #include "errorReporter.h"
 #include "errorListWidget.h"
 #include "../../qrkernel/exception/exception.h"
+#include "../../qrutils/usabilityStatistics/usabilityStatistics.h"
 
 using namespace qReal;
 using namespace gui;
@@ -39,6 +40,7 @@ void ErrorReporter::updateVisibility(bool isVisible)
 
 void ErrorReporter::addInformation(QString const &message, Id const &position)
 {
+	utils::UsabilityStatistics::reportErrors("information", position.editor(), position.element(), message);
 	Error error(message, Error::information, position);
 	mErrors.append(error);
 	showError(error, mErrorListWidget);
@@ -46,6 +48,7 @@ void ErrorReporter::addInformation(QString const &message, Id const &position)
 
 void ErrorReporter::addWarning(QString const &message, Id const &position)
 {
+	utils::UsabilityStatistics::reportErrors("warning", position.editor(), position.element(), message);
 	Error error(message, Error::warning, position);
 	mErrors.append(error);
 	showError(error, mErrorListWidget);
@@ -53,6 +56,7 @@ void ErrorReporter::addWarning(QString const &message, Id const &position)
 
 void ErrorReporter::addError(QString const &message, Id const &position)
 {
+	utils::UsabilityStatistics::reportErrors("error", position.editor(), position.element(), message);
 	Error error(message, Error::error, position);
 	mErrors.append(error);
 	showError(error, mErrorListWidget);
@@ -60,6 +64,7 @@ void ErrorReporter::addError(QString const &message, Id const &position)
 
 void ErrorReporter::addCritical(QString const &message, Id const &position)
 {
+	utils::UsabilityStatistics::reportErrors("critical", position.editor(), position.element(), message);
 	Error error(message, Error::critical, position);
 	mErrors.append(error);
 	showError(error, mErrorListWidget);

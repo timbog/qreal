@@ -22,6 +22,7 @@ HEADERS += \
 	$$PWD/inFile.h \
 	$$PWD/nameNormalizer.h \
 	$$PWD/generator/abstractGenerator.h
+#	$$PWD/usabilityStatistics/usabilityStatistics.h
 
 SOURCES += \
 	$$PWD/outFile.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
 	$$PWD/inFile.cpp \
 	$$PWD/nameNormalizer.cpp \
 	$$PWD/generator/abstractGenerator.cpp
+#	$$PWD/usabilityStatistics/usabilityStatistics.cpp
 
 FORMS += \
 	$$PWD/watchListWindow.ui
@@ -47,3 +49,4 @@ include(graphTransformation/graphTransformation.pri)
 # Stuff for running long operations in different modes
 include(invocationUtils/invocationUtils.pri)
 
+include(usabilityStatistics/usabilityStatistics.pri)

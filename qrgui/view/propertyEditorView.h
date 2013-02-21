@@ -34,6 +34,7 @@ public:
 	PropertyEditorModel* model() {
 		return mModel;
 	}
+	void installEventFilter(QObject *obj);
 
 public slots:
 

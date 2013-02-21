@@ -517,3 +517,10 @@ void PaletteTree::loadPalette(bool isIconsView, int itemsCount, EditorManager &e
 	initDone();
 	setComboBoxIndex();
 }
+
+void PaletteTree::installEventFilter(QObject *obj)
+{
+	QWidget::installEventFilter(obj);
+	comboBox()->installEventFilter(obj);
+
+}

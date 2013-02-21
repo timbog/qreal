@@ -12,6 +12,7 @@
 #include "../mainwindow/mainWindow.h"
 
 using namespace qReal;
+using namespace utils;
 
 EditorViewScene::EditorViewScene(QObject *parent)
 		: QGraphicsScene(parent)
@@ -433,7 +434,10 @@ void EditorViewScene::createElement(const QMimeData *mimeData, QPointF const &sc
 
 	// TODO: make it simpler
 	Id id = Id::loadFromString(uuid);
-
+	//usability information nastya
+	//report each element, which appear on scene
+	utils::UsabilityStatistics::reportCreation(id.editor(), id.element());
+	//usability information nastya
 	if (searchForParents) {
 		// if element is node then we should look for parent for him
 		e = mWindow->manager()->graphicalObject(id);

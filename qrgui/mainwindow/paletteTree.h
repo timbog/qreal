@@ -81,6 +81,8 @@ public:
 	*/
 	void loadPalette(bool isIconsView, int itemsCount, EditorManager &editorManager);
 	~PaletteTree();
+
+	void installEventFilter(QObject *obj);
 signals:
 	void paletteParametersChanged();
 public slots:

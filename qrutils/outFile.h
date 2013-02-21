@@ -18,5 +18,4 @@ private:
 	QTextStream mOut;
 	QFile mFile;
 };
-
 }

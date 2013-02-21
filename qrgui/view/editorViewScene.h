@@ -9,6 +9,8 @@
 
 #include "editorViewMVIface.h"
 
+#include "../../qrutils/usabilityStatistics/usabilityStatistics.h"
+
 //const int indexGrid = 30; // distance between two lines in the grid
 const int arrowMoveOffset = 5;
 
