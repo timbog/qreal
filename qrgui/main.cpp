@@ -9,6 +9,7 @@ using namespace qReal;
 
 int main(int argc, char *argv[])
 {
+	QDateTime const startedTime = QDateTime::currentDateTime();
 	QApplication app(argc, argv);
 
 	QTranslator appTranslator;
@@ -28,6 +29,9 @@ int main(int argc, char *argv[])
 	int exitCode = 0; // The window decided to not show itself, exiting now.
 	if (window.isVisible())
 		exitCode = app.exec();
+	QDateTime const currentTime = QDateTime::currentDateTime();
+	QString const totalTime = QString::number(static_cast<qlonglong>(startedTime.msecsTo(currentTime)));
+	utils::UsabilityStatistics::reportTotalTime(totalTime, exitCode);
 	delete utils::UsabilityStatistics::instance();
 	return exitCode;
 }

@@ -15,14 +15,16 @@ public:
 
 	static void reportCreation(QString const &editorName, QString const elementName);
 	static void reportErrors(QString const &type, QString const &editorName, QString const &elementName, QString const &message);
+	static void reportTotalTime(const QString &totalTime, const int &exitCode);
 private:
 	UsabilityStatistics();
 
 	void reportCreationOfElements(const QString &editorName, const QString elementName);
 	void reportErrorsOfElements(QString const &type, QString const &editorName, QString const &elementName, QString const &message);
+	void reportTotalTimeOfExec(const QString &totalTime, const int &exitCode);
 
 	static UsabilityStatistics* object;
-	//QTextStream mMouseClickPositionStream;
+
 	QFile mElementOnSceneCreationFile;
 	static QTextStream elementOnSceneCreationStream;
 	static int creationNumber;
@@ -30,7 +32,12 @@ private:
 	QFile mErrorReporterFile;
 	static QTextStream errorReporterStream;
 	static int errorReporterNumber;
-	//QTextStream mTotalTimeStream;
+
+	QFile mTotalTimeFile;
+	static QTextStream totalTimeStream;
+
+	//QTextStream mMouseClickPositionStream;
+
 	//QTextStream mMenuElementUsingStream;
 
 };
