@@ -34,6 +34,8 @@
 
 #include "referenceList.h"
 
+#include "../filterObject.h"
+
 namespace Ui {
 class MainWindowUi;
 }
@@ -190,6 +192,7 @@ private slots:
 	void initSettingsManager();
 	void connectActions();
 	void initActionsFromSettings();
+	void connectActionsForUStatistics();
 
 	void centerOn(Id const &id);
 	void graphicalModelExplorerClicked(const QModelIndex &index);
@@ -328,6 +331,7 @@ private:
 	FindManager *mFindHelper;
 	ProjectManager *mProjectManager;
 	StartDialog *mStartDialog;
+	FilterObject *mFilterObject;
 };
 
 }

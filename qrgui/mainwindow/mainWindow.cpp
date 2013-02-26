@@ -42,7 +42,6 @@
 #include "../dialogs/progressDialog/progressDialog.h"
 
 #include "dotRunner.h"
-#include "../filterobject.h"
 
 using namespace qReal;
 
@@ -124,18 +123,48 @@ MainWindow::MainWindow()
 	mFindReplaceDialog = new FindReplaceDialog(mModels->logicalRepoApi(), this);
 	mFindHelper = new FindManager(mModels->repoControlApi(), mModels->mutableLogicalRepoApi()
 			, this, mFindReplaceDialog);
+	mFilterObject = new FilterObject();
 	initToolPlugins();
 	connectWindowTitle();
+	connectActionsForUStatistics();
 	connectActions();
 	initExplorers();
 
 	mStartDialog->exec();
-	FilterObject *obj = new FilterObject();
-	mUi->menuHelp->installEventFilter(obj);
-	mUi->menu_File->installEventFilter(obj);
-	mUi->actionAbout->installEventFilter(obj);
-	mUi->actionAboutQt->installEventFilter(obj);
-	mUi->actionHelp->installEventFilter(obj);
+
+	mUi->menuHelp->installEventFilter(mFilterObject);
+	mUi->menu_File->installEventFilter(mFilterObject);
+	mUi->menuEdit->installEventFilter(mFilterObject);
+	mUi->menuSettings->installEventFilter(mFilterObject);
+	mUi->menuTools->installEventFilter(mFilterObject);
+	mUi->menu_View->installEventFilter(mFilterObject);
+	mUi->actionShow_grid->installEventFilter(mFilterObject);
+}
+
+void MainWindow::connectActionsForUStatistics()
+{
+	QList<QAction*> triggeredActions;
+	triggeredActions << mUi->actionQuit << mUi->actionOpen << mUi->actionSave
+			<< mUi->actionSave_as << mUi->actionSave_diagram_as_a_picture
+			<< mUi->actionPrint << mUi->actionMakeSvg << mUi->actionImport
+			<< mUi->actionDeleteFromDiagram << mUi->actionCopyElementsOnDiagram
+			<< mUi->actionPasteOnDiagram << mUi->actionPasteReference
+			<< mUi->actionPreferences << mUi->actionPlugins << mUi->actionHelp
+			<< mUi->actionAbout << mUi->actionAboutQt << mUi->actionShow
+			<< mUi->actionFullscreen << mUi->actionFind;
+
+	foreach (QAction* action, triggeredActions) {
+		connect (action, SIGNAL(triggered()), mFilterObject, SLOT(triggeredActionActivated()));
+	}
+
+	QList<QAction*> toggledActions;
+	toggledActions << mUi->actionShowSplash << mUi->actionShow_grid
+				<< mUi->actionShow_alignment << mUi->actionSwitch_on_grid
+				<< mUi->actionSwitch_on_alignment;
+
+	foreach (QAction* action, toggledActions) {
+		connect (action, SIGNAL(toggled(bool)), mFilterObject, SLOT(toggledActionActivated(bool)));
+	}
 }
 
 void MainWindow::connectActions()
