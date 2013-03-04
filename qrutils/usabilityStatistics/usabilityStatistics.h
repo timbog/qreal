@@ -17,6 +17,7 @@ public:
 	static void reportErrors(QString const &type, QString const &editorName, QString const &elementName, QString const &message);
 	static void reportTotalTime(QString const &totalTime, int const &exitCode);
 	static void reportMenuElements(QString const &elementName, QString const &status = "none");
+	static void reportMouseClick(const QPoint &pos);
 private:
 	UsabilityStatistics();
 
@@ -24,6 +25,7 @@ private:
 	void reportErrorsOfElements(QString const &type, QString const &editorName, QString const &elementName, QString const &message);
 	void reportTotalTimeOfExec(QString const &totalTime, int const &exitCode);
 	void reportMenuElementsUsing(QString const &elementName, QString const &status = "none");
+	void reportMouseClickPosition(QPoint const &pos);
 
 	static UsabilityStatistics* object;
 
@@ -38,11 +40,12 @@ private:
 	QFile mTotalTimeFile;
 	static QTextStream totalTimeStream;
 
-	//QTextStream mMouseClickPositionStream;
-
 	QFile mMenuElementUsingFile;
 	static QTextStream menuElementUsingStream;
 	static int menuElementUsingNumber;
 
+	QFile mMouseClickPositionFile;
+	static QTextStream mouseClickPositionStream;
+	static int mouseClickPositionNumber;
 };
 }

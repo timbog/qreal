@@ -3,14 +3,14 @@
 #include "../qrutils/usabilityStatistics/usabilityStatistics.h"
 
 #include <QtCore/QtPlugin>
-#include <QtGui/QApplication>
+#include "qrealApplication.h"
 
 using namespace qReal;
 
 int main(int argc, char *argv[])
 {
 	QDateTime const startedTime = QDateTime::currentDateTime();
-	QApplication app(argc, argv);
+	QRealApplication app(argc, argv);
 
 	QTranslator appTranslator;
 	QTranslator qtTranslator;

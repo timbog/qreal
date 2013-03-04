@@ -8,7 +8,8 @@ macx {
 
 RESOURCES = qrgui.qrc
 SOURCES = main.cpp \
-		filterObject.cpp
+		filterObject.cpp \
+    qrealApplication.cpp
 
 TRANSLATIONS = qrgui_ru.ts
 
@@ -76,4 +77,5 @@ include (toolPluginInterface/toolPluginInterface.pri)
 include (textEditor/textEditor.pri)
 
 HEADERS += \
-	filterObject.h
+	filterObject.h \
+    qrealApplication.h

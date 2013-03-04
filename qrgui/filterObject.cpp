@@ -12,7 +12,9 @@ FilterObject::FilterObject(QObject *parent) :
 
 bool FilterObject::eventFilter(QObject *object, QEvent *event)
 {
-	qDebug() << "eventFilter" << object  << " " << event->type();
+	Q_UNUSED(object);
+	Q_UNUSED(event);
+	//qDebug() << "eventFilter" << object  << " " << event->type();
 	return false;
 }
 

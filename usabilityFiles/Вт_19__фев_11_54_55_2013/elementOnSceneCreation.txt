@@ -1,3 +1,0 @@
-1 MetaEditor MetaEntityNode
-2 MetaEditor MetaEntityEnum
-3 MetaEditor MetaEntityImport

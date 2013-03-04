@@ -18,7 +18,7 @@ HEADERS += \
 	mainwindow/miniMap.h \
 	mainwindow/referenceList.h \
 	mainwindow/projectManager/autosaver.h \
-	mainwindow/externBrowser.h \
+	mainwindow/externBrowser.h
 
 SOURCES += \
 	mainwindow/mainWindow.cpp \
@@ -36,7 +36,7 @@ SOURCES += \
 	mainwindow/miniMap.cpp \
 	mainwindow/referenceList.cpp \
 	mainwindow/projectManager/autosaver.cpp \
-	mainwindow/macExternBrowser.cpp \
+	mainwindow/macExternBrowser.cpp
 
 win32 {
 	HEADERS += \

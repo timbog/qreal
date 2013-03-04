@@ -1589,6 +1589,7 @@ void MainWindow::initToolPlugins()
 			} else if (action.toolbarName() == "generators") {
 				mUi->generatorsToolbar->addAction(action.action());
 			}
+			connect(action.action(), SIGNAL(triggered()), mFilterObject, SLOT(triggeredActionActivated()));
 		}
 	}
 
