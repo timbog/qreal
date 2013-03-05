@@ -14,23 +14,27 @@ QTextStream UsabilityStatistics::errorReporterStream;
 QTextStream UsabilityStatistics::totalTimeStream;
 QTextStream UsabilityStatistics::menuElementUsingStream;
 QTextStream UsabilityStatistics::mouseClickPositionStream;
+QTextStream UsabilityStatistics::settingChangesStream;
 
 int UsabilityStatistics::creationNumber;
 int UsabilityStatistics::errorReporterNumber;
 int UsabilityStatistics::menuElementUsingNumber;
 int UsabilityStatistics::mouseClickPositionNumber;
+int UsabilityStatistics::settingChangesNumber;
 
 QString const elementCreationFileName = "/elementOnSceneCreation.txt";
 QString const errorReporterFileName = "/errorReporter.txt";
 QString const totalTimeFileName = "/totalTime.txt";
 QString const menuElementUsingFileName = "/menuElementUsing.txt";
 QString const mouseClickPositionFileName = "/mouseClickPosition.txt";
+QString const settingChangesFileName = "/settingChanges.txt";
 
 UsabilityStatistics::UsabilityStatistics()
 {
 	QDir dir(".");
 
-	mElementOnSceneCreationFile.setFileName(dir.absolutePath() + elementCreationFileName);//создать и открыть все файлы
+	///create and open all files
+	mElementOnSceneCreationFile.setFileName(dir.absolutePath() + elementCreationFileName);
 	if (mElementOnSceneCreationFile.open(QFile::WriteOnly | QFile::Truncate)) {
 		elementOnSceneCreationStream.setDevice(&mElementOnSceneCreationFile);
 	}
@@ -58,10 +62,19 @@ UsabilityStatistics::UsabilityStatistics()
 		mouseClickPositionStream.setDevice(&mMouseClickPositionFile);
 	}
 	mouseClickPositionNumber = 1;
+
+	mSettingChangesFile.setFileName(dir.absolutePath() + settingChangesFileName);
+	if (mSettingChangesFile.open(QFile::WriteOnly | QFile::Truncate)) {
+		settingChangesStream.setDevice(&mSettingChangesFile);
+	}
+	settingChangesNumber = 1;
 }
 
 void UsabilityStatistics::reportCreationOfElements(const QString &editorName, const QString elementName)
 {
+	if (!mStatus)
+		return;
+
 	QDateTime now = QDateTime::currentDateTime();
 	elementOnSceneCreationStream << creationNumber << " "
 			<< editorName << " "
@@ -72,6 +85,9 @@ void UsabilityStatistics::reportCreationOfElements(const QString &editorName, co
 
 void UsabilityStatistics::reportErrorsOfElements(const QString &type, const QString &editorName, const QString &elementName, const QString &message)
 {
+	if (!mStatus)
+		return;
+
 	QDateTime now = QDateTime::currentDateTime();
 	errorReporterStream << errorReporterNumber << " "
 			<< type << " "
@@ -84,6 +100,9 @@ void UsabilityStatistics::reportErrorsOfElements(const QString &type, const QStr
 
 void UsabilityStatistics::reportTotalTimeOfExec(const QString &totalTime, const int &exitCode)
 {
+	if (!mStatus)
+		return;
+
 	totalTimeStream << "TotalSessionTime: "
 			<< totalTime << " msecs Exit code:"
 			<< exitCode << "\n";
@@ -91,6 +110,9 @@ void UsabilityStatistics::reportTotalTimeOfExec(const QString &totalTime, const 
 
 void UsabilityStatistics::reportMenuElementsUsing(const QString &elementName, const QString &status)
 {
+	if (!mStatus)
+		return;
+
 	QDateTime now = QDateTime::currentDateTime();
 	QString const statusText = (status == "none") ? "" : status + " ";
 	menuElementUsingStream << menuElementUsingNumber << " "
@@ -102,12 +124,34 @@ void UsabilityStatistics::reportMenuElementsUsing(const QString &elementName, co
 
 void UsabilityStatistics::reportMouseClickPosition(const QPoint &pos)
 {
+	if (!mStatus)
+		return;
+
 	QDateTime now = QDateTime::currentDateTime();
 	mouseClickPositionStream << mouseClickPositionNumber << " ("
 			<< QString::number(pos.x()) << ", "
 			<< QString::number(pos.y()) << ") "
 			<< now.toString() << "\n";
 	mouseClickPositionNumber++;
+}
+
+void UsabilityStatistics::reportSettingsChangesInfo(const QString &name, const QString &oldValue, const QString &newValue)
+{
+	if (!mStatus)
+		return;
+
+	QDateTime now = QDateTime::currentDateTime();
+	settingChangesStream << settingChangesNumber << " "
+			<< name << " "
+			<< oldValue << " "
+			<< newValue << " "
+			<< now.toString() << "\n";
+	settingChangesNumber++;
+}
+
+void UsabilityStatistics::setActualStatus(bool status)
+{
+	mStatus = status;
 }
 
 UsabilityStatistics *UsabilityStatistics::instance()
@@ -125,6 +169,10 @@ UsabilityStatistics::~UsabilityStatistics()
 	mTotalTimeFile.close();
 	mMenuElementUsingFile.close();
 	mMouseClickPositionFile.close();
+	mSettingChangesFile.close();
+
+	if (!mStatus)
+		return;
 
 	QDir dir(".");
 	QDateTime now = QDateTime::currentDateTime();
@@ -134,6 +182,7 @@ UsabilityStatistics::~UsabilityStatistics()
 	QString const oldTotalTimeName = mTotalTimeFile.fileName();
 	QString const oldMenuElementUsingName = mMenuElementUsingFile.fileName();
 	QString const oldMouseClickPositionName = mMouseClickPositionFile.fileName();
+	QString const oldSettingChangesName = mSettingChangesFile.fileName();
 
 	QString const newDirName = now.toString().replace(" ", "_").replace(".", "_").replace(":", "_");
 	QString const newFileElementOnSceneCreationName = newDirName + elementCreationFileName;
@@ -141,6 +190,7 @@ UsabilityStatistics::~UsabilityStatistics()
 	QString const newFileTotalTimeName = newDirName + totalTimeFileName;
 	QString const newFileMenuElementUsingName = newDirName + menuElementUsingFileName;
 	QString const newFileMouseClickPositionName = newDirName + mouseClickPositionFileName;
+	QString const newFileSettingChangesName = newDirName + settingChangesFileName;
 
 	if (dir.cdUp()) {
 		dir.cd("usabilityFiles");
@@ -150,6 +200,7 @@ UsabilityStatistics::~UsabilityStatistics()
 		QString const newTotalTimeName = dirAbsolutePathName + newFileTotalTimeName;
 		QString const newMenuElementUsingName = dirAbsolutePathName + newFileMenuElementUsingName;
 		QString const newMouseClickPositionName = dirAbsolutePathName + newFileMouseClickPositionName;
+		QString const newSettingChangesName = dirAbsolutePathName + newFileSettingChangesName;
 
 		dir.mkdir(newDirName);
 		QFile::copy(oldElementOnSceneCreationName, newElementOnSceneCreationName);
@@ -157,6 +208,7 @@ UsabilityStatistics::~UsabilityStatistics()
 		QFile::copy(oldTotalTimeName, newTotalTimeName);
 		QFile::copy(oldMenuElementUsingName, newMenuElementUsingName);
 		QFile::copy(oldMouseClickPositionName, newMouseClickPositionName);
+		QFile::copy(oldSettingChangesName, newSettingChangesName);
 	}
 	//close all files and move to usabilbity files folder
 }
@@ -185,3 +237,15 @@ void UsabilityStatistics::reportMouseClick(const QPoint &pos)
 {
 	instance()->reportMouseClickPosition(pos);
 }
+
+void UsabilityStatistics::reportSettingsChanges(const QString &name, const QVariant &oldValue, const QVariant &newValue)
+{
+	instance()->reportSettingsChangesInfo(name, oldValue.toString(), newValue.toString());
+}
+
+void UsabilityStatistics::setStatus(bool status)
+{
+	instance()->setActualStatus(status);
+}
+
+

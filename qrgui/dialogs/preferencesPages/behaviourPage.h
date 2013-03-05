@@ -2,6 +2,8 @@
 
 #include "preferencesPage.h"
 
+#include "../../filterObject.h"
+
 namespace Ui {
 	class PreferencesBehaviourPage;
 }
@@ -24,4 +26,5 @@ private slots:
 
 private:
 	Ui::PreferencesBehaviourPage *mUi;
+	FilterObject *mFilterObject;
 };

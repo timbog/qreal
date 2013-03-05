@@ -5,6 +5,8 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
 
+//#include "../qrutils/usabilityStatistics/usabilityStatistics.h"
+
 using namespace qReal;
 
 SettingsManager* SettingsManager::mInstance = NULL;
@@ -18,6 +20,7 @@ SettingsManager::SettingsManager()
 
 void SettingsManager::setValue(QString const &name, QVariant const &value)
 {
+	//utils::UsabilityStatistics::reportSettingsChanges(name, instance()->value(name), value);
 	instance()->set(name, value);
 }
 

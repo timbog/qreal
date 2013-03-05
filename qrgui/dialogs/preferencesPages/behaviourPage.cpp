@@ -10,18 +10,22 @@ PreferencesBehaviourPage::PreferencesBehaviourPage(QWidget *parent)
 {
 	mIcon = QIcon(":/icons/preferences/behaviour.png");
 	mUi->setupUi(this);
+	mFilterObject = new FilterObject();
 
 	connect(mUi->autoSaveCheckBox, SIGNAL(clicked(bool)), this, SLOT(showAutoSaveBox(bool)));
+	connect(mUi->collectArgonomicalValuesCheckBox, SIGNAL(clicked(bool)), mFilterObject, SLOT(setStatusCollectUsabilityStatistics(bool)));
 
 	mUi->warningWindowBox->setChecked(SettingsManager::value("warningWindow").toBool());
 	mUi->arrangeLinksCheckBox->setChecked(SettingsManager::value("arrangeLinks").toBool());
 	mUi->paletteTabCheckBox->setChecked(SettingsManager::value("PaletteTabSwitching").toBool());
 	mUi->diagramCreateCheckBox->setChecked(SettingsManager::value("diagramCreateSuggestion").toBool());
 	mUi->autoSaveCheckBox->setChecked(SettingsManager::value("Autosave").toBool());
+	mUi->collectArgonomicalValuesCheckBox->setChecked(SettingsManager::value("collectArgonomicalValues").toBool());
 	mUi->autoSaveSpinBox->setValue(SettingsManager::value("AutosaveInterval").toInt());
 	mUi->gestureDelaySpinBox->setValue(SettingsManager::value("gestureDelay").toInt());
 
 	showAutoSaveBox(mUi->autoSaveCheckBox->isChecked());
+	mFilterObject->setStatusCollectUsabilityStatistics(mUi->collectArgonomicalValuesCheckBox->isChecked());
 }
 
 PreferencesBehaviourPage::~PreferencesBehaviourPage()
@@ -47,6 +51,7 @@ void PreferencesBehaviourPage::save()
 	SettingsManager::setValue("arrangeLinks", mUi->arrangeLinksCheckBox->isChecked());
 	SettingsManager::setValue("warningWindow", mUi->warningWindowBox->isChecked());
 	SettingsManager::setValue("Autosave", mUi->autoSaveCheckBox->isChecked());
+	SettingsManager::setValue("collectArgonomicalValues", mUi->collectArgonomicalValuesCheckBox->isChecked());
 	SettingsManager::setValue("AutosaveInterval", mUi->autoSaveSpinBox->value());
 	SettingsManager::setValue("gestureDelay", mUi->gestureDelaySpinBox->value());
 }

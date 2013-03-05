@@ -14,6 +14,7 @@ public slots:
 	bool eventFilter(QObject *object, QEvent *event);
 	void triggeredActionActivated();
 	void toggledActionActivated(bool status);
+	void setStatusCollectUsabilityStatistics(bool status);
 };
 
 

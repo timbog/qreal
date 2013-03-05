@@ -35,3 +35,8 @@ void FilterObject::toggledActionActivated(bool status)
 		utils::UsabilityStatistics::reportMenuElements(action->text(), statusForUStatistics);
 	}
 }
+
+void FilterObject::setStatusCollectUsabilityStatistics(bool status)
+{
+	utils::UsabilityStatistics::setStatus(status);
+}
