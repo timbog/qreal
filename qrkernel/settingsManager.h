@@ -36,6 +36,9 @@ public:
 
 	static void setUsabilityStatistics(UsabilityStatisticsInterface *usabilityStatistics);
 
+	/// Removes all entries in persistent external storage
+	static void clearSettings();
+
 	/// Returns an instance of a singleton.
 	static SettingsManager* instance();
 

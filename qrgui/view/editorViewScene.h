@@ -1,8 +1,9 @@
 #pragma once
 
-#include <QGraphicsScene>
-#include <QGraphicsLineItem>
-#include <QSignalMapper>
+#include <QtGui/QGraphicsScene>
+#include <QtGui/QGraphicsLineItem>
+#include <QtCore/QSignalMapper>
+
 #include "../../qrkernel/roles.h"
 #include "../umllib/nodeElement.h"
 #include "gestures/mouseMovementManager.h"
@@ -11,7 +12,6 @@
 
 #include "../../qrutils/usabilityStatistics/usabilityStatistics.h"
 
-//const int indexGrid = 30; // distance between two lines in the grid
 const int arrowMoveOffset = 5;
 
 namespace qReal {
@@ -27,6 +27,8 @@ class EditorViewScene : public QGraphicsScene
 public:
 	explicit EditorViewScene(QObject *parent);
 	~EditorViewScene();
+
+	void addItem(QGraphicsItem *item);
 
 	void clearScene();
 	virtual int launchEdgeMenu(EdgeElement *edge, NodeElement *node, const QPointF &scenePos);
@@ -73,6 +75,8 @@ public:
 
 	/// update (for a beauty) all edges when tab is opening
 	void updateEdgesViaNodes();
+
+	void setTitlesVisible(bool visible);
 
 public slots:
 	qReal::Id createElement(const QString &type);
@@ -246,4 +250,5 @@ private:
 	QList<QGraphicsItem* >* mSelectList;
 
 	bool mIsSelectEvent;
+	bool mTitlesVisible;
 };
