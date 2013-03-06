@@ -175,7 +175,13 @@ UsabilityStatistics::~UsabilityStatistics()
 		return;
 
 	QDir dir(".");
-	QDateTime now = QDateTime::currentDateTime();
+	QString now = QString::number(QDate::currentDate().year()) + "."
+			+ QString::number(QDate::currentDate().month()) + "."
+			+ QString::number(QDate::currentDate().day()) + "_"
+			+ QString::number(QTime::currentTime().hour()) + "."
+			+ QString::number(QTime::currentTime().minute()) + "."
+			+ QString::number(QTime::currentTime().second()) + "."
+			+ QString::number(QTime::currentTime().msec());
 
 	QString const oldElementOnSceneCreationName = mElementOnSceneCreationFile.fileName();
 	QString const oldErrorReporterName = mErrorReporterFile.fileName();
@@ -184,7 +190,7 @@ UsabilityStatistics::~UsabilityStatistics()
 	QString const oldMouseClickPositionName = mMouseClickPositionFile.fileName();
 	QString const oldSettingChangesName = mSettingChangesFile.fileName();
 
-	QString const newDirName = now.toString().replace(" ", "_").replace(".", "_").replace(":", "_");
+	QString const newDirName = now;
 	QString const newFileElementOnSceneCreationName = newDirName + elementCreationFileName;
 	QString const newFileErrorReporterName = newDirName + errorReporterFileName;
 	QString const newFileTotalTimeName = newDirName + totalTimeFileName;
@@ -247,5 +253,3 @@ void UsabilityStatistics::setStatus(bool status)
 {
 	instance()->setActualStatus(status);
 }
-
-

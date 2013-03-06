@@ -5,8 +5,6 @@
 #include <QtCore/QTextStream>
 #include <QtCore/QStringList>
 
-//#include "../qrutils/usabilityStatistics/usabilityStatistics.h"
-
 using namespace qReal;
 
 SettingsManager* SettingsManager::mInstance = NULL;
@@ -20,8 +18,13 @@ SettingsManager::SettingsManager()
 
 void SettingsManager::setValue(QString const &name, QVariant const &value)
 {
-	//utils::UsabilityStatistics::reportSettingsChanges(name, instance()->value(name), value);
+	instance()->reportValueSetting(name, instance()->value(name), value);
 	instance()->set(name, value);
+}
+
+void SettingsManager::setUsabilityStatistics(UsabilityStatisticsInterface *usabilityStatistics)
+{
+	instance()->setUsabilityStatisticsInterface(usabilityStatistics);
 }
 
 QVariant SettingsManager::value(QString const &key)
@@ -56,6 +59,19 @@ QVariant SettingsManager::get(QString const &name, QVariant const &defaultValue)
 		return mDefaultValues[name];
 	}
 	return defaultValue;
+}
+
+void SettingsManager::setUsabilityStatisticsInterface(UsabilityStatisticsInterface *usabilityStatistics)
+{
+	mUsabilityStatisticsInterface = usabilityStatistics;
+}
+
+void SettingsManager::reportValueSetting(const QString &name, const QVariant &oldValue, const QVariant &newValue)
+{
+	if (oldValue == newValue) {
+		return;
+	}
+	mUsabilityStatisticsInterface->reportSettingsChanges(name, oldValue, newValue);
 }
 
 void SettingsManager::saveData()

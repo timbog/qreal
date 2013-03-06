@@ -4,10 +4,11 @@
 #include <QtCore/QTextStream>
 
 #include "../utilsDeclSpec.h"
+#include "../../qrkernel/usabilityStatisticsInterface.h"
 
 namespace utils {
 
-class QRUTILS_EXPORT UsabilityStatistics {
+class QRUTILS_EXPORT UsabilityStatistics : public qReal::UsabilityStatisticsInterface {
 
 public:
 	static UsabilityStatistics* instance();
@@ -18,7 +19,7 @@ public:
 	static void reportTotalTime(QString const &totalTime, int const &exitCode);
 	static void reportMenuElements(QString const &elementName, QString const &status = "none");
 	static void reportMouseClick(QPoint const &pos);
-	static void reportSettingsChanges(QString const &name, QVariant const &oldValue, QVariant const &newValue);
+	void reportSettingsChanges(QString const &name, QVariant const &oldValue, QVariant const &newValue);
 	static void setStatus(bool status);
 private:
 	UsabilityStatistics();

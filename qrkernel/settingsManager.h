@@ -6,6 +6,7 @@
 #include <QtCore/QVariant>
 
 #include "kernelDeclSpec.h"
+#include "usabilityStatisticsInterface.h"
 
 namespace qReal {
 
@@ -33,6 +34,8 @@ public:
 	/// @param value Parameter value.
 	static void setValue(QString const &key, QVariant const &value);
 
+	static void setUsabilityStatistics(UsabilityStatisticsInterface *usabilityStatistics);
+
 	/// Returns an instance of a singleton.
 	static SettingsManager* instance();
 
@@ -48,6 +51,8 @@ private:
 	SettingsManager();
 	void set(QString const &name, QVariant const &value);
 	QVariant get(QString const &key, QVariant const &defaultValue = QVariant()) const;
+	void setUsabilityStatisticsInterface(UsabilityStatisticsInterface *usabilityStatistics);
+	void reportValueSetting(QString const &name, QVariant const &oldValue, QVariant const &newValue);
 
 	void initDefaultValues();
 
@@ -61,6 +66,7 @@ private:
 	QHash<QString, QVariant> mDefaultValues;
 	/// Persistent settings storage.
 	QSettings mSettings;
+	UsabilityStatisticsInterface *mUsabilityStatisticsInterface;
 };
 
 }
