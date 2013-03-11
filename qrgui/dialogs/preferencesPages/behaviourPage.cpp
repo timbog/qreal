@@ -23,6 +23,7 @@ PreferencesBehaviourPage::PreferencesBehaviourPage(QWidget *parent)
 	mUi->collectArgonomicalValuesCheckBox->setChecked(SettingsManager::value("collectArgonomicalValues").toBool());
 	mUi->autoSaveSpinBox->setValue(SettingsManager::value("AutosaveInterval").toInt());
 	mUi->gestureDelaySpinBox->setValue(SettingsManager::value("gestureDelay").toInt());
+	mUi->usabilityModeCheckBox->setChecked(mUsabilityTestingMode = SettingsManager::value("usabilityTestingMode").toBool());
 
 	showAutoSaveBox(mUi->autoSaveCheckBox->isChecked());
 	mFilterObject->setStatusCollectUsabilityStatistics(mUi->collectArgonomicalValuesCheckBox->isChecked());
@@ -51,9 +52,16 @@ void PreferencesBehaviourPage::save()
 	SettingsManager::setValue("arrangeLinks", mUi->arrangeLinksCheckBox->isChecked());
 	SettingsManager::setValue("warningWindow", mUi->warningWindowBox->isChecked());
 	SettingsManager::setValue("Autosave", mUi->autoSaveCheckBox->isChecked());
-	SettingsManager::setValue("collectArgonomicalValues", mUi->collectArgonomicalValuesCheckBox->isChecked());
 	SettingsManager::setValue("AutosaveInterval", mUi->autoSaveSpinBox->value());
 	SettingsManager::setValue("gestureDelay", mUi->gestureDelaySpinBox->value());
+
+	bool usabilityTestingMode = mUi->usabilityModeCheckBox->isChecked();
+	SettingsManager::setValue("collectArgonomicalValues", mUi->collectArgonomicalValuesCheckBox->isChecked() || usabilityTestingMode);
+	if (mUsabilityTestingMode != usabilityTestingMode) {
+		if (usabilityTestingMode)
+			mUi->collectArgonomicalValuesCheckBox->setChecked(true);
+		emit usabilityTestingModeChanged(mUsabilityTestingMode = usabilityTestingMode);
+	}
 }
 
 void PreferencesBehaviourPage::showAutoSaveBox(bool show)

@@ -1,5 +1,4 @@
 #include <QtCore/QDir>
-#include <QtCore/QDate>
 #include <QtCore/QDebug>
 #include <QPointF>
 
@@ -21,6 +20,7 @@ int UsabilityStatistics::errorReporterNumber;
 int UsabilityStatistics::menuElementUsingNumber;
 int UsabilityStatistics::mouseClickPositionNumber;
 int UsabilityStatistics::settingChangesNumber;
+int UsabilityStatistics::testNumber;
 
 QString const elementCreationFileName = "/elementOnSceneCreation.txt";
 QString const errorReporterFileName = "/errorReporter.txt";
@@ -68,6 +68,8 @@ UsabilityStatistics::UsabilityStatistics()
 		settingChangesStream.setDevice(&mSettingChangesFile);
 	}
 	settingChangesNumber = 1;
+
+	testNumber = 1;
 }
 
 void UsabilityStatistics::reportCreationOfElements(const QString &editorName, const QString elementName)
@@ -75,11 +77,10 @@ void UsabilityStatistics::reportCreationOfElements(const QString &editorName, co
 	if (!mStatus)
 		return;
 
-	QDateTime now = QDateTime::currentDateTime();
 	elementOnSceneCreationStream << creationNumber << " "
 			<< editorName << " "
 			<< elementName << " "
-			<< now.toString() << "\n";
+			<< currentDateTime() << "\n";
 	creationNumber++;
 }
 
@@ -88,13 +89,12 @@ void UsabilityStatistics::reportErrorsOfElements(const QString &type, const QStr
 	if (!mStatus)
 		return;
 
-	QDateTime now = QDateTime::currentDateTime();
 	errorReporterStream << errorReporterNumber << " "
 			<< type << " "
 			<< editorName << " "
 			<< elementName << " "
 			<< message << " "
-			<< now.toString() << "\n";
+			<< currentDateTime() << "\n";
 	errorReporterNumber++;
 }
 
@@ -113,12 +113,11 @@ void UsabilityStatistics::reportMenuElementsUsing(const QString &elementName, co
 	if (!mStatus)
 		return;
 
-	QDateTime now = QDateTime::currentDateTime();
 	QString const statusText = (status == "none") ? "" : status + " ";
 	menuElementUsingStream << menuElementUsingNumber << " "
 			<< elementName << " "
 			<< statusText
-			<< now.toString() << "\n";
+			<< currentDateTime() << "\n";
 	menuElementUsingNumber++;
 }
 
@@ -127,11 +126,10 @@ void UsabilityStatistics::reportMouseClickPosition(const QPoint &pos)
 	if (!mStatus)
 		return;
 
-	QDateTime now = QDateTime::currentDateTime();
 	mouseClickPositionStream << mouseClickPositionNumber << " ("
 			<< QString::number(pos.x()) << ", "
 			<< QString::number(pos.y()) << ") "
-			<< now.toString() << "\n";
+			<< currentDateTime() << "\n";
 	mouseClickPositionNumber++;
 }
 
@@ -140,18 +138,45 @@ void UsabilityStatistics::reportSettingsChangesInfo(const QString &name, const Q
 	if (!mStatus)
 		return;
 
-	QDateTime now = QDateTime::currentDateTime();
 	settingChangesStream << settingChangesNumber << " "
 			<< name << " "
 			<< oldValue << " "
 			<< newValue << " "
-			<< now.toString() << "\n";
+			<< currentDateTime() << "\n";
 	settingChangesNumber++;
 }
 
 void UsabilityStatistics::setActualStatus(bool status)
 {
 	mStatus = status;
+}
+
+void UsabilityStatistics::reportTestStartedInfo()
+{
+	QList<QTextStream *> streamList;
+	streamList << &elementOnSceneCreationStream << &errorReporterStream << &totalTimeStream
+			<< &menuElementUsingStream << &mouseClickPositionStream << &settingChangesStream;
+	QString const now = currentDateTime();
+	for (int i = 0; i < streamList.length(); ++i) {
+		*(streamList[i]) << "Test " << testNumber << " started at " << now << "\n";
+	}
+}
+
+void UsabilityStatistics::reportTestFinishedInfo()
+{
+	QList<QTextStream *> streamList;
+	streamList << &elementOnSceneCreationStream << &errorReporterStream << &totalTimeStream
+			<< &menuElementUsingStream << &mouseClickPositionStream << &settingChangesStream;
+	QString const now = currentDateTime();
+	for (int i = 0; i < streamList.length(); ++i) {
+		*(streamList[i]) << "Test " << testNumber << " finished at " << now << "\n";
+	}
+	testNumber++;
+}
+
+QString UsabilityStatistics::currentDateTime()
+{
+	return QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss.zzz");
 }
 
 UsabilityStatistics *UsabilityStatistics::instance()
@@ -175,14 +200,7 @@ UsabilityStatistics::~UsabilityStatistics()
 		return;
 
 	QDir dir(".");
-	QString now = QString::number(QDate::currentDate().year()) + "."
-			+ QString::number(QDate::currentDate().month()) + "."
-			+ QString::number(QDate::currentDate().day()) + "_"
-			+ QString::number(QTime::currentTime().hour()) + "."
-			+ QString::number(QTime::currentTime().minute()) + "."
-			+ QString::number(QTime::currentTime().second()) + "."
-			+ QString::number(QTime::currentTime().msec());
-
+	QString const newDirName = currentDateTime();
 	QString const oldElementOnSceneCreationName = mElementOnSceneCreationFile.fileName();
 	QString const oldErrorReporterName = mErrorReporterFile.fileName();
 	QString const oldTotalTimeName = mTotalTimeFile.fileName();
@@ -190,7 +208,6 @@ UsabilityStatistics::~UsabilityStatistics()
 	QString const oldMouseClickPositionName = mMouseClickPositionFile.fileName();
 	QString const oldSettingChangesName = mSettingChangesFile.fileName();
 
-	QString const newDirName = now;
 	QString const newFileElementOnSceneCreationName = newDirName + elementCreationFileName;
 	QString const newFileErrorReporterName = newDirName + errorReporterFileName;
 	QString const newFileTotalTimeName = newDirName + totalTimeFileName;
@@ -252,4 +269,14 @@ void UsabilityStatistics::reportSettingsChanges(const QString &name, const QVari
 void UsabilityStatistics::setStatus(bool status)
 {
 	instance()->setActualStatus(status);
+}
+
+void UsabilityStatistics::reportTestStarted()
+{
+	instance()->reportTestStartedInfo();
+}
+
+void UsabilityStatistics::reportTestFinished()
+{
+	instance()->reportTestFinishedInfo();
 }

@@ -44,6 +44,8 @@ void PreferencesDialog::init(QAction * const showGridAction, QAction * const sho
 	connect(editorPage, SIGNAL(paletteRepresentationChanged()), this
 		, SIGNAL(paletteRepresentationChanged()));
 	connect(miscellaniousPage, SIGNAL(iconsetChanged()), this, SIGNAL(iconsetChanged()));
+	connect(dynamic_cast<PreferencesBehaviourPage *>(behaviourPage), SIGNAL(usabilityTestingModeChanged(bool)),
+			this, SIGNAL(usabilityTestingModeChanged(bool)));
 
 	registerPage(tr("Behaviour"), behaviourPage);
 	registerPage(tr("Debugger"), debuggerPage);

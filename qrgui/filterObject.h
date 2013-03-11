@@ -15,6 +15,8 @@ public slots:
 	void triggeredActionActivated();
 	void toggledActionActivated(bool status);
 	void setStatusCollectUsabilityStatistics(bool status);
+	void reportTestStarted();
+	void reportTestFinished();
 };
 
 

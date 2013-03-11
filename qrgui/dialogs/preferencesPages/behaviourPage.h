@@ -18,6 +18,9 @@ public:
 
 	void save();
 
+signals:
+	void usabilityTestingModeChanged(bool on);
+
 protected:
 	void changeEvent(QEvent *e);
 
@@ -27,4 +30,5 @@ private slots:
 private:
 	Ui::PreferencesBehaviourPage *mUi;
 	FilterObject *mFilterObject;
+	bool mUsabilityTestingMode;
 };

@@ -2,6 +2,7 @@
 
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
+#include <QtCore/QDateTime>
 
 #include "../utilsDeclSpec.h"
 #include "../../qrkernel/usabilityStatisticsInterface.h"
@@ -21,6 +22,8 @@ public:
 	static void reportMouseClick(QPoint const &pos);
 	void reportSettingsChanges(QString const &name, QVariant const &oldValue, QVariant const &newValue);
 	static void setStatus(bool status);
+	static void reportTestStarted();
+	static void reportTestFinished();
 private:
 	UsabilityStatistics();
 
@@ -31,6 +34,9 @@ private:
 	void reportMouseClickPosition(QPoint const &pos);
 	void reportSettingsChangesInfo(const QString &name, const QString &oldValue, const QString &newValue);
 	void setActualStatus(bool status);
+	void reportTestStartedInfo();
+	void reportTestFinishedInfo();
+	QString currentDateTime();
 
 	static UsabilityStatistics* object;
 	bool mStatus;
@@ -57,5 +63,7 @@ private:
 	QFile mSettingChangesFile;
 	static QTextStream settingChangesStream;
 	static int settingChangesNumber;
+
+	static int testNumber;
 };
 }

@@ -135,13 +135,15 @@ MainWindow::MainWindow(const QString &fileToOpen)
 		mStartDialog->exec();
 	}
 
-	mUi->menuHelp->installEventFilter(mFilterObject);
-	mUi->menu_File->installEventFilter(mFilterObject);
-	mUi->menuEdit->installEventFilter(mFilterObject);
-	mUi->menuSettings->installEventFilter(mFilterObject);
-	mUi->menuTools->installEventFilter(mFilterObject);
-	mUi->menu_View->installEventFilter(mFilterObject);
-	mUi->actionShow_grid->installEventFilter(mFilterObject);
+	mUsabilityTestingToolbar = new QToolBar();
+	mStartTest = new QAction(tr("Start test"), NULL);
+	mStartTest->setEnabled(true);
+	connect(mStartTest, SIGNAL(triggered()), this, SLOT(startUsabilityTest()));
+	mFinishTest = new QAction(tr("Finish test"), NULL);
+	mFinishTest->setEnabled(false);
+	connect(mFinishTest, SIGNAL(triggered()), this, SLOT(finishUsabilityTest()));
+	mUsabilityTestingToolbar->addAction(mStartTest);
+	mUsabilityTestingToolbar->addAction(mFinishTest);
 }
 
 void MainWindow::connectActionsForUStatistics()
@@ -881,6 +883,7 @@ void MainWindow::showPreferencesDialog()
 		connect(&mPreferencesDialog, SIGNAL(iconsetChanged()), this, SLOT(updatePaletteIcons()));
 		connect(&mPreferencesDialog, SIGNAL(settingsApplied()), this, SLOT(applySettings()));
 		connect(&mPreferencesDialog, SIGNAL(fontChanged()), this, SLOT(setSceneFont()));
+		connect(&mPreferencesDialog, SIGNAL(usabilityTestingModeChanged(bool)), this, SLOT(setUsabilityMode(bool)));
 	}
 	mPreferencesDialog.exec();
 	mToolManager.updateSettings();
@@ -1477,6 +1480,30 @@ void MainWindow::updatePaletteIcons()
 
 	mUi->paletteTree->setActiveEditor(currentId);
 	mUi->paletteTree->setComboBox(currentId);
+}
+
+void MainWindow::setUsabilityMode(bool mode)
+{
+	if (mode) {
+		addToolBar(mUsabilityTestingToolbar);
+	}
+	else {
+		removeToolBar(mUsabilityTestingToolbar);
+	}
+}
+
+void MainWindow::startUsabilityTest()
+{
+	mStartTest->setEnabled(false);
+	mFinishTest->setEnabled(true);
+	mFilterObject->reportTestStarted();
+}
+
+void MainWindow::finishUsabilityTest()
+{
+	mFinishTest->setEnabled(false);
+	mStartTest->setEnabled(true);
+	mFilterObject->reportTestFinished();
 }
 
 void MainWindow::applySettings()

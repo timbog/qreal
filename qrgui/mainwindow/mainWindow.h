@@ -231,6 +231,10 @@ private slots:
 
 	void updatePaletteIcons();
 
+	void setUsabilityMode(bool mode);
+	void startUsabilityTest();
+	void finishUsabilityTest();
+
 private:
 	void deleteElementFromScene(QPersistentModelIndex const &index);
 	QHash<EditorView*, QPair<CodeArea *, QPair<QPersistentModelIndex, int> > > *mOpenedTabsWithEditor;
@@ -351,6 +355,10 @@ private:
 	FilterObject *mFilterObject;
 	SceneCustomizer *mSceneCustomizer;
 	QList<QDockWidget *> mAdditionalDocks;
+
+	QToolBar *mUsabilityTestingToolbar;
+	QAction *mStartTest;
+	QAction *mFinishTest;
 };
 
 }

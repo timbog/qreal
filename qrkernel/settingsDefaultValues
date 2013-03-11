@@ -57,3 +57,4 @@ robotModel=2
 2dCursorType=1
 showTitlesForRobots=false
 collectArgonomicalValues = true
+usabilityTestingMode = false

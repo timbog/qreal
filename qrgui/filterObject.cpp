@@ -40,3 +40,13 @@ void FilterObject::setStatusCollectUsabilityStatistics(bool status)
 {
 	utils::UsabilityStatistics::setStatus(status);
 }
+
+void FilterObject::reportTestStarted()
+{
+	utils::UsabilityStatistics::reportTestStarted();
+}
+
+void FilterObject::reportTestFinished()
+{
+	utils::UsabilityStatistics::reportTestFinished();
+}
