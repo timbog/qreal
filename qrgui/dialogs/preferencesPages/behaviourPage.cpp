@@ -56,6 +56,7 @@ void PreferencesBehaviourPage::save()
 	SettingsManager::setValue("gestureDelay", mUi->gestureDelaySpinBox->value());
 
 	bool usabilityTestingMode = mUi->usabilityModeCheckBox->isChecked();
+	SettingsManager::setValue("usabilityTestingMode", usabilityTestingMode);
 	SettingsManager::setValue("collectArgonomicalValues", mUi->collectArgonomicalValuesCheckBox->isChecked() || usabilityTestingMode);
 	if (mUsabilityTestingMode != usabilityTestingMode) {
 		if (usabilityTestingMode)

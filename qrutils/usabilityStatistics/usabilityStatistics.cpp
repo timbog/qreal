@@ -216,6 +216,8 @@ UsabilityStatistics::~UsabilityStatistics()
 	QString const newFileSettingChangesName = newDirName + settingChangesFileName;
 
 	if (dir.cdUp()) {
+		if (!dir.exists("usabilityFiles"))
+			dir.mkdir("usabilityFiles");
 		dir.cd("usabilityFiles");
 		QString const dirAbsolutePathName = dir.absolutePath() + "/";
 		QString const newElementOnSceneCreationName = dirAbsolutePathName + newFileElementOnSceneCreationName;

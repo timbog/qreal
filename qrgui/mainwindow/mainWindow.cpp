@@ -144,6 +144,8 @@ MainWindow::MainWindow(const QString &fileToOpen)
 	connect(mFinishTest, SIGNAL(triggered()), this, SLOT(finishUsabilityTest()));
 	mUsabilityTestingToolbar->addAction(mStartTest);
 	mUsabilityTestingToolbar->addAction(mFinishTest);
+	addToolBar(Qt::TopToolBarArea, mUsabilityTestingToolbar);
+	setUsabilityMode(SettingsManager::value("usabilityTestingMode").toBool());
 }
 
 void MainWindow::connectActionsForUStatistics()
@@ -883,8 +885,8 @@ void MainWindow::showPreferencesDialog()
 		connect(&mPreferencesDialog, SIGNAL(iconsetChanged()), this, SLOT(updatePaletteIcons()));
 		connect(&mPreferencesDialog, SIGNAL(settingsApplied()), this, SLOT(applySettings()));
 		connect(&mPreferencesDialog, SIGNAL(fontChanged()), this, SLOT(setSceneFont()));
-		connect(&mPreferencesDialog, SIGNAL(usabilityTestingModeChanged(bool)), this, SLOT(setUsabilityMode(bool)));
 	}
+	connect(&mPreferencesDialog, SIGNAL(usabilityTestingModeChanged(bool)), this, SLOT(setUsabilityMode(bool)));
 	mPreferencesDialog.exec();
 	mToolManager.updateSettings();
 	mProjectManager->reinitAutosaver();
@@ -1485,10 +1487,9 @@ void MainWindow::updatePaletteIcons()
 void MainWindow::setUsabilityMode(bool mode)
 {
 	if (mode) {
-		addToolBar(mUsabilityTestingToolbar);
-	}
-	else {
-		removeToolBar(mUsabilityTestingToolbar);
+		mUsabilityTestingToolbar->show();
+	} else {
+		mUsabilityTestingToolbar->hide();
 	}
 }
 

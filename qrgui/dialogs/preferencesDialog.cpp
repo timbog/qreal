@@ -24,7 +24,7 @@ PreferencesDialog::~PreferencesDialog()
 void PreferencesDialog::init(QAction * const showGridAction, QAction * const showAlignmentAction
 	, QAction * const activateGridAction, QAction * const activateAlignmentAction)
 {
-	PreferencesPage *behaviourPage = new PreferencesBehaviourPage(ui->pageContentWigdet);
+	PreferencesBehaviourPage *behaviourPage = new PreferencesBehaviourPage(ui->pageContentWigdet);
 	PreferencesPage *debuggerPage = new PreferencesDebuggerPage(ui->pageContentWigdet);
 	PreferencesPage *miscellaniousPage = new PreferencesMiscellaniousPage(ui->pageContentWigdet);
 //	PreferencesPage *featuresPage = new PreferencesFeaturesPage(ui->pageContentWigdet);
@@ -44,8 +44,8 @@ void PreferencesDialog::init(QAction * const showGridAction, QAction * const sho
 	connect(editorPage, SIGNAL(paletteRepresentationChanged()), this
 		, SIGNAL(paletteRepresentationChanged()));
 	connect(miscellaniousPage, SIGNAL(iconsetChanged()), this, SIGNAL(iconsetChanged()));
-	connect(dynamic_cast<PreferencesBehaviourPage *>(behaviourPage), SIGNAL(usabilityTestingModeChanged(bool)),
-			this, SIGNAL(usabilityTestingModeChanged(bool)));
+	connect(behaviourPage, SIGNAL(usabilityTestingModeChanged(bool))
+			, this, SIGNAL(usabilityTestingModeChanged(bool)), Qt::UniqueConnection);
 
 	registerPage(tr("Behaviour"), behaviourPage);
 	registerPage(tr("Debugger"), debuggerPage);
