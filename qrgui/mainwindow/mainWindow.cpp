@@ -760,7 +760,7 @@ void MainWindow::showAbout()
 
 void MainWindow::showHelp()
 {
-	QDesktopServices::openUrl(QUrl("./help/index.html"));
+	QDesktopServices::openUrl(QUrl("C:/QReal/clean/qreal/bin/help/index.html"));
 }
 
 void MainWindow::toggleShowSplash(bool show)
