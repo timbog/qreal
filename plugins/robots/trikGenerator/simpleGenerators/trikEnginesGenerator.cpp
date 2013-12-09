@@ -1,5 +1,5 @@
 #include "trikEnginesGenerator.h"
-#include <generatorCustomizer.h>
+#include "base/generatorCustomizer.h"
 
 using namespace qReal::robots::generators::simple;
 

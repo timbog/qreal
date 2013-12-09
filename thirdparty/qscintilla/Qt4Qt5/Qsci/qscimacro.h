@@ -35,7 +35,7 @@ extern "C++" {
 
 #include <qlist.h>
 
-#include <Qsci/qsciglobal.h>
+#include "qsciglobal.h"
 
 
 class QsciScintilla;

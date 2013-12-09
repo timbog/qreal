@@ -14,9 +14,8 @@
 
 using namespace qReal;
 
-ProjectManager::ProjectManager(MainWindow *mainWindow, TextManagerInterface *textManager)
+ProjectManager::ProjectManager(MainWindow *mainWindow)
 	: mMainWindow(mainWindow)
-	, mTextManager(textManager)
 	, mAutosaver(new Autosaver(this))
 	, mUnsavedIndicator(false)
 	, mSomeProjectOpened(false)
@@ -132,7 +131,6 @@ bool ProjectManager::open(QString const &fileName)
 	emit afterOpen(fileName);
 
 	mSomeProjectOpened = true;
-
 	return true;
 }
 
@@ -288,6 +286,12 @@ void ProjectManager::save()
 	refreshApplicationStateAfterSave();
 }
 
+void ProjectManager::saveGenCode(QString const &text)
+{
+	utils::OutFile out("nxt-tools/example0/example0.c");
+	out() << text;
+}
+
 bool ProjectManager::restoreIncorrectlyTerminated()
 {
 	return mAutosaver->checkTempFile();
@@ -295,10 +299,6 @@ bool ProjectManager::restoreIncorrectlyTerminated()
 
 bool ProjectManager::saveOrSuggestToSaveAs()
 {
-	if (mTextManager->saveText(false)) {
-		return true;
-	}
-
 	if (mSaveFilePath == mAutosaver->tempFilePath()
 			|| mSaveFilePath == mMainWindow->editorManagerProxy().saveMetamodelFilePath()) {
 		return suggestToSaveAs();
@@ -309,10 +309,6 @@ bool ProjectManager::saveOrSuggestToSaveAs()
 
 bool ProjectManager::suggestToSaveAs()
 {
-	if (mTextManager->saveText(true)) {
-		return true;
-	}
-
 	if (mMainWindow->editorManagerProxy().isInterpretationMode()) {
 		QString const newMetamodelFileName = getSaveFileName(tr("Select file to save current metamodel to"));
 		if (newMetamodelFileName.isEmpty()) {

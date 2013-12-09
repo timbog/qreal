@@ -26,9 +26,9 @@ protected:
 
 private:
 	//! @returns real new pos on scene
-	QPointF newPos() const;
+	QPointF getNewPos() const;
 	//! @returns pos for normal CreateElementCommand usage
-	QPointF newGraphicalPos() const;
+	QPointF getNewGraphicalPos() const;
 	Id newGraphicalParent() const;
 
 	QPointF vectorFromContainer() const;

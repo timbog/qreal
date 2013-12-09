@@ -8,21 +8,19 @@ using namespace gui;
 
 PaletteTreeWidgets::PaletteTreeWidgets(PaletteTree &parent, MainWindow *mainWindow
 		, EditorManagerInterface &editorManagerProxy)
-	: QSplitter(Qt::Vertical)
-	, mEditorManager(&editorManagerProxy)
+	: mEditorManager(&editorManagerProxy)
 	, mParentPalette(&parent)
 	, mMainWindow(mainWindow)
 	, mEditorTree(new PaletteTreeWidget(parent, *mainWindow, editorManagerProxy, false))
 	, mUserTree(new PaletteTreeWidget(parent, *mainWindow, editorManagerProxy, true))
 {
-	initWidgets();
+	initWidget();
 }
 
 PaletteTreeWidgets::PaletteTreeWidgets(PaletteTree &parent, MainWindow *mainWindow
 		, EditorManagerInterface &editorManagerProxy
 		, Id const &editor, Id const &diagram)
-	: QSplitter(Qt::Vertical)
-	, mParentPalette(&parent)
+	: mParentPalette(&parent)
 	, mMainWindow(mainWindow)
 	, mEditor(editor)
 	, mDiagram(diagram)
@@ -30,22 +28,28 @@ PaletteTreeWidgets::PaletteTreeWidgets(PaletteTree &parent, MainWindow *mainWind
 	, mUserTree(new PaletteTreeWidget(parent, *mainWindow, editorManagerProxy, true))
 {
 	mEditorManager = &editorManagerProxy;
-	initWidgets();
+	initWidget();
 	initEditorTree();
 	initUserTree();
 }
 
-void PaletteTreeWidgets::initWidgets()
+void PaletteTreeWidgets::initWidget()
 {
-	initWidget(mEditorTree);
-	initWidget(mUserTree);
+	QSplitter *splitter = new QSplitter(Qt::Vertical);
+	initWidget(mEditorTree, splitter);
+	initWidget(mUserTree, splitter);
+	QVBoxLayout *layout = new QVBoxLayout;
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->setMargin(0);
+	layout->addWidget(splitter);
+	setLayout(layout);
 }
 
-void PaletteTreeWidgets::initWidget(PaletteTreeWidget * const tree)
+void PaletteTreeWidgets::initWidget(PaletteTreeWidget * const tree, QSplitter * const splitter)
 {
 	tree->setHeaderHidden(true);
 	tree->setSelectionMode(QAbstractItemView::NoSelection);
-	addWidget(tree);
+	splitter->addWidget(tree);
 }
 
 void PaletteTreeWidgets::initEditorTree()

@@ -5,12 +5,14 @@
 
 #include <QtCore/QDebug>
 
+#include <qrutils/inFile.h>
 #include "robotCommunication/tcpRobotCommunicator.h"
 #include "trikMasterGenerator.h"
 
 using namespace qReal;
-using namespace qReal::robots::generators;
-using namespace trik;
+using namespace qReal::robots::generators::trik;
+
+QString const scriptExtension = ".qts";
 
 TrikGeneratorPlugin::TrikGeneratorPlugin()
 		: mGenerateCodeAction(NULL)
@@ -24,6 +26,13 @@ TrikGeneratorPlugin::TrikGeneratorPlugin()
 
 TrikGeneratorPlugin::~TrikGeneratorPlugin()
 {
+}
+
+void TrikGeneratorPlugin::init(PluginConfigurator const &configurator)
+{
+	mMainWindowInterface = &configurator.mainWindowInterpretersInterface();
+	mRepo = dynamic_cast<qrRepo::RepoApi const *>(&configurator.logicalModelApi().logicalRepoApi());
+	mProjectManager = &configurator.projectManager();
 }
 
 QList<ActionInfo> TrikGeneratorPlugin::actions()
@@ -48,45 +57,34 @@ QList<ActionInfo> TrikGeneratorPlugin::actions()
 			<< runProgramActionInfo << stopRobotActionInfo;
 }
 
-MasterGeneratorBase *TrikGeneratorPlugin::masterGenerator()
+bool TrikGeneratorPlugin::generateCode()
 {
-	return new TrikMasterGenerator(*mRepo
+	mProjectManager->save();
+	mMainWindowInterface->errorReporter()->clearErrors();
+
+	TrikMasterGenerator generator(*mRepo
 			, *mMainWindowInterface->errorReporter()
 			, mMainWindowInterface->activeDiagram());
-}
+	generator.initialize();
 
-void TrikGeneratorPlugin::regenerateExtraFiles(QFileInfo const &newFileInfo)
-{
-	Q_UNUSED(newFileInfo);
-}
+	QString const generatedSrcPath = generator.generate();
+	if (mMainWindowInterface->errorReporter()->wereErrors()) {
+		return false;
+	}
 
-QFileInfo TrikGeneratorPlugin::defaultFilePath(QString const &projectName) const
-{
-	return QFileInfo(QString("trik/%1/%1.qts").arg(projectName));
-}
+	QString const generatedCode = utils::InFile::readAll(generatedSrcPath);
+	if (!generatedCode.isEmpty()) {
+		mMainWindowInterface->showInTextEditor(tr("Generated code"), generatedCode);
+	}
 
-QString TrikGeneratorPlugin::extension() const
-{
-	return "qts";
-}
-
-QString TrikGeneratorPlugin::extDescrition() const
-{
-	return tr("TRIK Source File");
-}
-
-QString TrikGeneratorPlugin::generatorName() const
-{
-	return "Trik";
+	return true;
 }
 
 bool TrikGeneratorPlugin::uploadProgram()
 {
-	QFileInfo const fileInfo = currentSource();
-
-	if (fileInfo != QFileInfo()) {
+	if (generateCode()) {
 		TcpRobotCommunicator communicator;
-		bool const result = communicator.uploadProgram(fileInfo.absoluteFilePath());
+		bool const result = communicator.uploadProgram(currentProgramName());
 		if (!result) {
 			mMainWindowInterface->errorReporter()->addError(tr("No connection to robot"));
 		}
@@ -102,8 +100,7 @@ void TrikGeneratorPlugin::runProgram()
 {
 	if (uploadProgram()) {
 		TcpRobotCommunicator communicator;
-		QFileInfo const fileInfo = currentSource();
-		communicator.runProgram(fileInfo.absoluteFilePath());
+		communicator.runProgram(currentProgramName());
 	} else {
 		qDebug() << "Program upload failed, aborting";
 	}
@@ -115,4 +112,11 @@ void TrikGeneratorPlugin::stopRobot()
 	if (!communicator.stopRobot()) {
 		mMainWindowInterface->errorReporter()->addError(tr("No connection to robot"));
 	}
+}
+
+QString TrikGeneratorPlugin::currentProgramName() const
+{
+	QString const saveFileName = mRepo->workingFile();
+	QFileInfo const fileInfo(saveFileName);
+	return fileInfo.baseName() + scriptExtension;
 }

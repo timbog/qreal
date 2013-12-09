@@ -36,9 +36,9 @@ extern "C++" {
 
 #include <QList>
 
-#include <Qsci/qsciabstractapis.h>
-#include <Qsci/qsciglobal.h>
-#include <Qsci/qsciscintilla.h>
+#include "qsciabstractapis.h"
+#include "qsciglobal.h"
+#include "qsciscintilla.h"
 
 
 class QsciAPIsPrepared;

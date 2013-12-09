@@ -158,7 +158,7 @@ void PropertyEditorView::buttonClicked(QtProperty *property)
 
 	// there are only four types of buttons: shape, reference, text and directory path
 	if (name == "shape") {
-		mMainWindow->openShapeEditor(actualIndex, role, propertyValue, false);
+		mMainWindow->openShapeEditor(actualIndex, role, propertyValue);
 	} else {
 		QString const typeName = mModel->typeName(index).toLower();
 		if (typeName == "code") {

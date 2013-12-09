@@ -1,13 +1,12 @@
 #pragma once
 
-#include <generatorFactoryBase.h>
+#include "base/generatorFactoryBase.h"
 
 namespace qReal {
 namespace robots {
 namespace generators {
 namespace trik {
 
-/// Generator factory implemtation for TRIK platform
 class TrikGeneratorFactory : public GeneratorFactoryBase
 {
 public:

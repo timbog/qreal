@@ -4,12 +4,12 @@
 #include <QtCore/QTimer>
 #include <QtCore/qmath.h>
 
-#include <qrutils/mathUtils/gaussNoise.h>
 #include "d2ModelWidget.h"
 #include "robotModelInterface.h"
 #include "worldModel.h"
 #include "timeline.h"
-#include "details/nxtDisplay.h"
+#include "../details/nxtDisplay.h"
+#include "../../../../../qrutils/mathUtils/gaussNoise.h"
 
 namespace qReal {
 namespace interpreters {
@@ -17,19 +17,24 @@ namespace robots {
 namespace details {
 namespace d2Model {
 
+qreal const onePercentAngularVelocity = 0.0055;
+int const touchSensorWallStrokeIncrement = 10;
+int const touchSensorStrokeIncrement = 5;
+int const maxLightSensorValur = 1023;
+
 class D2RobotModel : public QObject, public RobotModelInterface
 {
 	Q_OBJECT
 
 public:
-	explicit D2RobotModel(QObject *parent = 0);
+	D2RobotModel(QObject *parent = 0);
 	~D2RobotModel();
 	virtual void clear();
 	void startInit();
 	void startInterpretation();
 	void stopRobot();
 	void setBeep(unsigned freq, unsigned time);
-	void setNewMotor(int speed, uint degrees, int port, bool breakMode);
+	void setNewMotor(int speed, uint degrees, int const port);
 	virtual SensorsConfiguration &configuration();
 	D2ModelWidget *createModelWidget();
 	int readEncoder(int const port) const;
@@ -45,9 +50,8 @@ public:
 	void showModelWidget();
 
 	virtual void setRotation(qreal angle);
-	virtual qreal rotateAngle() const;
+	virtual double rotateAngle() const;
 
-	void setRobotPos(QPointF const &newPos);
 	QPointF robotPos();
 
 	virtual void serialize(QDomDocument &target);
@@ -71,44 +75,23 @@ private slots:
 	void nextFragment();
 
 private:
-	struct Engine
-	{
+	struct Motor {
 		int radius;
 		int speed;
-		int spoiledSpeed;
 		int degrees;
 		ATime activeTimeType;
 		bool isUsed;
-		qreal motorFactor;
-		bool breakMode;
 	};
 
-	struct Beep
-	{
+	struct Beep {
 		unsigned freq;
 		int time;
 	};
 
-	QPointF rotationCenter() const;
-	QVector2D robotDirectionVector() const;
-
-	/// Counts and returns traction force vector taking into consideration engines speed and placement
-	void countTractionForceAndItsMoment(qreal speed1, qreal speed2, bool breakMode);
-
-	/// Applies all forces currently acting on robot
-	void recalculateVelocity();
-	void applyRotationalFrictionForce();
-
-	/// Calculates forces and force moments acting on the robot from the walls
-	void findCollision(WallItem const &wall);
-
-	/// Returns robot to a point where it must be if it is currently in the wall
-	void getFromWalls();
-
 	void setSpeedFactor(qreal speedMul);
 	void initPosition();
-	Engine *initEngine(int radius, int speed, long unsigned int degrees, int port, bool isUsed);
-	void countNewForces();
+	Motor* initMotor(int radius, int speed, long unsigned int degrees, int port, bool isUsed);
+	void countNewCoord();
 	void countBeep();
 
 	QPair<QPointF, qreal> countPositionAndDirection(
@@ -129,17 +112,17 @@ private:
 	int spoilSonarReading(int const distance) const;
 	int truncateToInterval(int const a, int const b, int const res) const;
 
-	void nextStep();
-
 	D2ModelWidget *mD2ModelWidget;
-	Engine *mEngineA;
-	Engine *mEngineB;
-	Engine *mEngineC;
+	Motor *mMotorA;
+	Motor *mMotorB;
+	Motor *mMotorC;
 	Beep mBeep;
 	details::NxtDisplay *mDisplay;
+	qreal mAngle;
+	QPointF mPos;
 	QPointF mRotatePoint;
-	QHash<int, Engine*> mEngines;  // TODO: Arrays are not enough here?
-	QHash<int, qreal> mTurnoverEngines;  // stores how many degrees the motor rotated on
+	QHash<int, Motor*> mMotors;  // TODO: Arrays are not enough here?
+	QHash<int, qreal> mTurnoverMotors;  // stores how many degrees the motor rotated on
 	SensorsConfiguration mSensorsConfiguration;
 	WorldModel mWorldModel;
 	Timeline *mTimeline;
@@ -148,19 +131,6 @@ private:
 	bool mNeedSync;
 	bool mNeedSensorNoise;
 	bool mNeedMotorNoise;
-
-	QPointF mPos;
-	qreal mAngle;
-
-	QVector2D mTractionForce;
-	QVector2D mReactionForce;
-	QVector2D mWallsFrictionForce;
-	QVector2D mGettingOutVector;
-	qreal mForceMomentDecrement;
-	qreal mForceMoment;
-
-	qreal mAngularVelocity;
-	QVector2D mVelocity;
 };
 
 }

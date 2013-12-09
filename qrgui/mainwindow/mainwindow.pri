@@ -24,6 +24,8 @@ HEADERS += \
 	$$PWD/palette/draggableElement.h \
 	$$PWD/palette/paletteTreeWidgets.h \
 	$$PWD/palette/paletteElement.h \
+    mainwindow/tipShower.h \
+    mainwindow/application.h
 
 SOURCES += \
 	$$PWD/mainWindow.cpp \
@@ -46,6 +48,8 @@ SOURCES += \
 	$$PWD/palette/draggableElement.cpp \
 	$$PWD/palette/paletteTreeWidgets.cpp \
 	$$PWD/palette/paletteElement.cpp \
+    mainwindow/tipShower.cpp \
+    mainwindow/application.cpp
 
 win32 {
 	HEADERS += \

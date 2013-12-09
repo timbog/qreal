@@ -34,7 +34,6 @@ HEADERS += \
 	details/sensorsConfigurationWidget.h \
 	details/nullTimer.h \
 	details/nxtDisplay.h \
-	details/textExpressionProcessor.h \
 
 SOURCES += \
 	customizer.cpp \
@@ -53,7 +52,6 @@ SOURCES += \
 	details/sensorsConfigurationWidget.cpp \
 	details/thread.cpp \
 	details/tracer.cpp \
-	details/textExpressionProcessor.cpp \
 
 FORMS += \
 	details/d2RobotModel/d2Form.ui \

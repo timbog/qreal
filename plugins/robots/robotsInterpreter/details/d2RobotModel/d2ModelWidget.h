@@ -9,9 +9,6 @@
 #include <QtGui/QPolygonF>
 #include <QtCore/QSignalMapper>
 
-#include <qrutils/qRealDialog.h>
-#include <qrutils/graphicsUtils/lineImpl.h>
-
 #include "lineItem.h"
 #include "stylusItem.h"
 #include "ellipseItem.h"
@@ -22,6 +19,7 @@
 #include "rotater.h"
 #include "timeline.h"
 #include "../nxtDisplay.h"
+#include "../../../../../qrutils/graphicsUtils/lineImpl.h"
 
 namespace Ui {
 class D2Form;
@@ -54,17 +52,12 @@ enum CursorType
 	NoDrag = 0
 	, hand
 	, multiselection
-	, drawWall
-	, drawLine
-	, drawStylus
-	, drawEllipse
 };
 }
 
 }
 
-class D2ModelWidget : public utils::QRealDialog
-{
+class D2ModelWidget : public QWidget {
 	Q_OBJECT
 
 public:
@@ -111,8 +104,6 @@ public slots:
 	void startTimelineListening();
 	/// Stops 2D model time counter
 	void stopTimelineListening();
-	void saveInitialRobotBeforeRun();
-	void setInitialRobotBeforeRun();
 
 signals:
 	void d2WasClosed();
@@ -138,7 +129,6 @@ private slots:
 	void addStylus(bool on);
 	void addEllipse(bool on);
 	void clearScene(bool removeRobot = false);
-	void setNoneButton();
 	void resetButtons();
 
 	void mousePressed(QGraphicsSceneMouseEvent *mouseEvent);
@@ -156,7 +146,7 @@ private slots:
 	void loadWorldModel();
 
 	void changePenWidth(int width);
-	void changePenColor(int textIndex);
+	void changePenColor(const QString &text);
 	void changePalette();
 
 	void changeSpeed(int curIndex);
@@ -183,11 +173,6 @@ private:
 	static const int indexOfColorSensor = 2;
 	static const int indexOfSonarSensor = 3;
 	static const int indexOfLightSensor = 4;
-
-	struct RobotState {
-		QPointF pos;
-		double rotation;
-	};
 
 	void connectUiButtons();
 	void initButtonGroups();
@@ -231,9 +216,6 @@ private:
 	void setItemPalette(QPen const &penItem, QBrush const &brushItem);
 	void setNoPalette();
 
-	void setNoneStatus();
-	void setCursorTypeForDrawing(enums::cursorType::CursorType type);
-
 	void initWidget();
 	QList<graphicsUtils::AbstractItem *> selectedColorItems();
 	bool isColorItem(graphicsUtils::AbstractItem *item);
@@ -242,8 +224,8 @@ private:
 
 	void centerOnRobot();
 	QGraphicsView::DragMode cursorTypeToDragType(enums::cursorType::CursorType type) const;
-	QCursor cursorTypeToCursor(enums::cursorType::CursorType type) const;
-	void processDragMode();
+	Qt::CursorShape cursorTypeToShape(enums::cursorType::CursorType type) const;
+	void processDragMode(int mode);
 	void syncCursorButtons();
 
 	void onFirstShow();
@@ -297,14 +279,11 @@ private:
 	QButtonGroup mButtonGroup;
 	QButtonGroup mCursorButtonGroup;
 
-	enums::cursorType::CursorType mNoneCursorType; // cursorType for noneStatus
-	enums::cursorType::CursorType mCursorType; // current cursorType
+	enums::cursorType::CursorType mCursorType;
 	bool mFollowRobot;
 
 	bool mFirstShow;
 	Timeline const * mTimeline;
-
-	RobotState mInitialRobotBeforeRun;
 };
 
 }

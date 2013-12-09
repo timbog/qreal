@@ -25,13 +25,8 @@ void Exploser::addUserPalette(gui::PaletteTreeWidget * const tree, Id const &dia
 
 void Exploser::refreshAllPalettes()
 {
-	if (mApi.editorManagerInterface().isInterpretationMode()) {
-		Id const interperterDiagram = mUserPalettes.keys().last();
-		refreshPalette(mUserPalettes[interperterDiagram], interperterDiagram);
-	} else {
-		foreach (Id const &diagram, mUserPalettes.keys()) {
-			refreshPalette(mUserPalettes[diagram], diagram);
-		}
+	foreach (Id const &diagram, mUserPalettes.keys()) {
+		refreshPalette(mUserPalettes[diagram], diagram);
 	}
 }
 
@@ -42,19 +37,18 @@ void Exploser::refreshPalette(gui::PaletteTreeWidget * const tree, Id const &dia
 	descriptions[mUserGroupTitle] = mUserGroupDescription;
 
 	IdList const childTypes = mApi.editorManagerInterface().elements(diagram);
-
 	foreach (Id const &child, childTypes) {
 		QList<Explosion> const explosions = mApi.editorManagerInterface().explosions(child);
-
 		foreach (Explosion const &explosion, explosions) {
 			if (!explosion.isReusable()) {
 				continue;
 			}
-
 			Id const target = explosion.target();
 			IdList const allTargets = mApi.logicalRepoApi().elementsByType(target.element(), true);
 			foreach (Id const &targetInstance, allTargets) {
-				if (mApi.isLogicalId(targetInstance)) {
+				if (mApi.isLogicalId(targetInstance) &&
+						!mApi.logicalRepoApi().incomingExplosions(targetInstance).isEmpty())
+				{
 					groups[mUserGroupTitle] << gui::PaletteElement(child
 							, mApi.logicalRepoApi().name(targetInstance)
 							, QString(), mApi.editorManagerInterface().icon(child)

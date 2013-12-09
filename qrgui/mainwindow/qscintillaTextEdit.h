@@ -16,7 +16,6 @@ class QScintillaTextEdit : public QsciScintilla
 	Q_OBJECT
 
 public:
-	QScintillaTextEdit();
 	QScintillaTextEdit(QPersistentModelIndex const &index, int const &role);
 
 	/// Destructor which runs after closing the tab with text editor. Allows to save written text.
@@ -28,16 +27,10 @@ public:
 	/// Configures some settings such as autoindentation and margin properties, brackets highlighting, etc
 	void setPythonEditorProperties();
 
-	void setCppLexer();
-
 signals:
+
 	/// Emitted in destructor to save written text to according model element
 	void textSaved(QString const &text, QPersistentModelIndex const &index, int const &role);
-
-	void textWasModified(gui::QScintillaTextEdit *code);
-
-private slots:
-	void emitTexWasModified();
 
 private:
 	QPersistentModelIndex const mIndex;

@@ -11,7 +11,7 @@
 
 #include <qrutils/outFile.h>
 #include <qrutils/xmlUtils.h>
-#include <qrutils/graphicsUtils/colorListEditor.h>
+#include <qrutils/graphicsUtils/colorlisteditor.h>
 
 #include "mainwindow/shapeEdit/xmlLoader.h"
 #include "mainwindow/mainWindow.h"
@@ -26,18 +26,8 @@ ShapeEdit::ShapeEdit(QWidget *parent)
 	connect(this, SIGNAL(saveSignal()), this, SLOT(saveToXml()));
 }
 
-ShapeEdit::ShapeEdit(
-	qReal::models::details::LogicalModel *model
-	, QPersistentModelIndex const &index
-	, const int &role
-	, bool useTypedPorts
-	)
-	: QWidget(NULL)
-	, mUi(new Ui::ShapeEdit)
-	, mModel(model)
-	, mIndex(index)
-	, mRole(role)
-	, mUseTypedPorts(useTypedPorts)
+ShapeEdit::ShapeEdit(qReal::models::details::LogicalModel *model, QPersistentModelIndex const &index, const int &role)
+		: QWidget(NULL), mUi(new Ui::ShapeEdit), mModel(model), mIndex(index), mRole(role)
 {
 	init();
 	mUi->saveButton->setEnabled(true);
@@ -45,21 +35,19 @@ ShapeEdit::ShapeEdit(
 }
 
 ShapeEdit::ShapeEdit(
-	Id const &id
-	, EditorManagerInterface *editorManager
-	, qrRepo::GraphicalRepoApi const &graphicalRepoApi
-	, MainWindow *mainWindow
-	, EditorView *editorView
-	, bool useTypedPorts
-	)
-	: QWidget(NULL)
-	, mUi(new Ui::ShapeEdit)
-	, mRole(0)
-	, mId(id)
-	, mEditorManager(editorManager)
-	, mMainWindow(mainWindow)
-	, mEditorView(editorView)
-	, mUseTypedPorts(useTypedPorts)
+		Id const &id
+		, EditorManagerInterface *editorManager
+		, qrRepo::GraphicalRepoApi const &graphicalRepoApi
+		, MainWindow *mainWindow
+		, EditorView *editorView
+		)
+		: QWidget(NULL)
+		, mUi(new Ui::ShapeEdit)
+		, mRole(0)
+		, mId(id)
+		, mEditorManager(editorManager)
+		, mMainWindow(mainWindow)
+		, mEditorView(editorView)
 {
 	mGraphicalElements = graphicalRepoApi.graphicalElements(Id(mId.editor(), mId.diagram(), mId.element()));
 	init();
@@ -660,13 +648,11 @@ QStringList ShapeEdit::getPortTypes() const
 	QStringList result;
 	result << "NonTyped";
 
-	if (mUseTypedPorts) {
-		qrRepo::RepoApi *repoApi = dynamic_cast<qrRepo::RepoApi *>(&mModel->mutableApi());
-		if (repoApi) {
-			foreach (qReal::Id const &port, repoApi->elementsByType("MetaEntityPort")) {
-				if (repoApi->isLogicalElement(port)) {
-					result << repoApi->name(port);
-				}
+	qrRepo::RepoApi *repoApi = dynamic_cast<qrRepo::RepoApi *>(&mModel->mutableApi());
+	if (repoApi) {
+		foreach (qReal::Id const &port, repoApi->elementsByType("MetaEntityPort")) {
+			if (repoApi->isLogicalElement(port)) {
+				result << repoApi->name(port);
 			}
 		}
 	}

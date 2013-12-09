@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtGui/QColor>
-#include <QtCore/QFileInfo>
 
 #include <qrkernel/ids.h>
 #include <qrutils/invocationUtils/longOperation.h>
@@ -29,6 +28,11 @@ public:
 	virtual Id activeDiagram() = 0;
 
 	virtual void openSettingsDialog(QString const &tab) = 0;
+
+	/// Opens new tab with text editor and shows a text in it
+	/// @param title A title of the tab
+	/// @param text A text that should be shown in an editor
+	virtual void showInTextEditor(QString const &title, QString const &text) = 0;
 
 	/// Rereads model information from repository and reinitializes models
 	/// and all related views. Needs to be called after major changes in repo.
@@ -77,10 +81,6 @@ public:
 	/// Shows progress bar on operation start
 	/// @param operation Operation that going to be invoced
 	virtual void reportOperation(invocation::LongOperation *operation) = 0;
-
-	virtual QWidget *currentTab() = 0;
-	virtual void openTab(QWidget *tab, QString const &title) = 0;
-	virtual void closeTab(QWidget *tab) = 0;
 };
 
 }

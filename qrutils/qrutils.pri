@@ -23,7 +23,6 @@ HEADERS += \
 	$$PWD/nameNormalizer.h \
 	$$PWD/fileSystemUtils.h \
 	$$PWD/stringUtils.h \
-	$$PWD/qRealDialog.h \
 	$$PWD/generator/abstractGenerator.h \
 
 SOURCES += \
@@ -37,7 +36,6 @@ SOURCES += \
 	$$PWD/nameNormalizer.cpp \
 	$$PWD/fileSystemUtils.cpp \
 	$$PWD/stringUtils.cpp \
-	$$PWD/qRealDialog.cpp \
 	$$PWD/generator/abstractGenerator.cpp \
 
 FORMS += \

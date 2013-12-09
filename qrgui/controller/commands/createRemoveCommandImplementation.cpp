@@ -54,7 +54,6 @@ void CreateRemoveCommandImplementation::remove()
 		mLogicalApi.removeReferencesTo(mId);
 		mLogicalApi.removeReferencesFrom(mId);
 		mLogicalApi.removeElement(mId);
-		mGraphicalApi.removeElement(mId);
 	} else {
 		mGraphicalPropertiesSnapshot = mGraphicalApi.properties(mId);
 		Id const logicalId = mGraphicalApi.logicalId(mId);
@@ -76,7 +75,6 @@ void CreateRemoveCommandImplementation::remove()
 			mLogicalApi.removeElement(logicalId);
 		}
 	}
-
 	mLogicalApi.exploser().refreshAllPalettes();
 }
 

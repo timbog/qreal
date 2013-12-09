@@ -51,8 +51,6 @@ ToolPluginManager::~ToolPluginManager()
 
 void ToolPluginManager::init(PluginConfigurator const &configurator)
 {
-	mSystemEvents = &configurator.systemEvents();
-
 	foreach (ToolPluginInterface *toolPlugin, mPlugins) {
 		toolPlugin->init(configurator);
 	}
@@ -109,12 +107,16 @@ Customizer *ToolPluginManager::customizer() const
 
 void ToolPluginManager::updateSettings()
 {
-	mSystemEvents->emitSettingsUpdated();
+	foreach (ToolPluginInterface *toolPlugin, mPlugins) {
+		toolPlugin->updateSettings();
+	}
 }
 
 void ToolPluginManager::activeTabChanged(Id const & rootElementId)
 {
-	mSystemEvents->emitActiveTabChanged(rootElementId);
+	foreach (ToolPluginInterface *toolPlugin, mPlugins) {
+		toolPlugin->activeTabChanged(rootElementId);
+	}
 }
 
 QList<ToolPluginInterface *> ToolPluginManager::getPlugins()

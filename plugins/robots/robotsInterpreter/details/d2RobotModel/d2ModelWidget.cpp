@@ -1,28 +1,28 @@
-#include "d2ModelWidget.h"
-#include "ui_d2Form.h"
-
 #include <QtCore/qmath.h>
 #include <QtWidgets/QFileDialog>
 #include <QtGui/QRegion>
 
-#include <qrutils/outFile.h>
-#include <qrutils/xmlUtils.h>
-#include <qrkernel/settingsManager.h>
-
+#include "d2ModelWidget.h"
 #include "d2RobotModel.h"
-#include "constants.h"
+#include "ui_d2Form.h"
+
 #include "sensorItem.h"
 #include "sonarSensorItem.h"
 #include "rotater.h"
 #include "timeline.h"
+#include "../../../../../qrutils/outFile.h"
+#include "../../../../../qrutils/xmlUtils.h"
+#include "../../../../../qrkernel/settingsManager.h"
 
 using namespace qReal::interpreters::robots;
 using namespace details::d2Model;
 using namespace graphicsUtils;
 
+QSize const displaySize(200, 300);
+
 D2ModelWidget::D2ModelWidget(RobotModelInterface *robotModel, WorldModel *worldModel
 	, NxtDisplay *nxtDisplay, QWidget *parent)
-		: QRealDialog("D2ModelWindow", parent)
+		: QWidget(parent)
 		, mUi(new Ui::D2Form)
 		, mScene(NULL)
 		, mRobot(NULL)
@@ -93,19 +93,12 @@ void D2ModelWidget::initWidget()
 
 	mUi->penWidthSpinBox->setRange(1, 30);
 
-	QStringList colorList = QStringList()
-			<< "Black"
-			<< "Blue"
-			<< "Green"
-			<< "Yellow"
-			<< "Red";
-	QStringList translatedColorList = QStringList()
+	mUi->penColorComboBox->setColorList(QStringList()
 			<< tr("Black")
 			<< tr("Blue")
 			<< tr("Green")
 			<< tr("Yellow")
-			<< tr("Red");
-	mUi->penColorComboBox->setColorList(colorList, translatedColorList);
+			<< tr("Red"));
 	mUi->penColorComboBox->setColor(QColor("black"));
 
 	initButtonGroups();
@@ -126,10 +119,9 @@ void D2ModelWidget::connectUiButtons()
 	connect(mUi->lineButton, SIGNAL(toggled(bool)), this, SLOT(addLine(bool)));
 	connect(mUi->wallButton, SIGNAL(toggled(bool)), this, SLOT(addWall(bool)));
 	connect(mUi->clearButton, SIGNAL(clicked()), this, SLOT(clearScene()));
-	connect(mUi->noneButton, SIGNAL(clicked()), this, SLOT(setNoneButton()));
 
 	connect(mUi->penWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(changePenWidth(int)));
-	connect(mUi->penColorComboBox, SIGNAL(activated(int)), this, SLOT(changePenColor(int)));
+	connect(mUi->penColorComboBox, SIGNAL(activated(const QString &)), this, SLOT(changePenColor(const QString &)));
 
 	connect(mUi->saveWorldModelPushButton, SIGNAL(clicked()), this, SLOT(saveWorldModel()));
 	connect(mUi->loadWorldModelPushButton, SIGNAL(clicked()), this, SLOT(loadWorldModel()));
@@ -152,7 +144,6 @@ void D2ModelWidget::connectUiButtons()
 	connect(mUi->handCursorButton, SIGNAL(toggled(bool)), this, SLOT(onHandCursorButtonToggled(bool)));
 	connect(mUi->multiselectionCursorButton, SIGNAL(toggled(bool)), this, SLOT(onMultiselectionCursorButtonToggled(bool)));
 
-	connect(mUi->initialStateButton, SIGNAL(clicked()), this, SLOT(setInitialRobotBeforeRun()));
 	connect(mUi->displayButton, SIGNAL(clicked()), this, SLOT(toggleDisplayVisibility()));
 }
 
@@ -220,22 +211,8 @@ void D2ModelWidget::init(bool isActive)
 void D2ModelWidget::setD2ModelWidgetActions(QAction *runAction, QAction *stopAction)
 {
 	connect(mUi->runButton, SIGNAL(clicked()), runAction, SIGNAL(triggered()), Qt::UniqueConnection);
-	connect(mUi->runButton, SIGNAL(clicked()), this, SLOT(saveInitialRobotBeforeRun()), Qt::UniqueConnection);
 	connect(mUi->stopButton, SIGNAL(clicked()), stopAction, SIGNAL(triggered()), Qt::UniqueConnection);
 	connect(stopAction, SIGNAL(triggered()), this, SLOT(stopTimelineListening()));
-}
-
-void D2ModelWidget::saveInitialRobotBeforeRun()
-{
-	mInitialRobotBeforeRun.pos = mRobot->robotPos();
-	mInitialRobotBeforeRun.rotation = mRobot->rotateAngle();
-}
-
-void D2ModelWidget::setInitialRobotBeforeRun()
-{
-	mRobot->setRobotPos(mInitialRobotBeforeRun.pos);
-	mRobot->setRotateAngle(mInitialRobotBeforeRun.rotation);
-	mScene->update();
 }
 
 void D2ModelWidget::drawInitialRobot()
@@ -308,11 +285,9 @@ void D2ModelWidget::changeEvent(QEvent *e)
 void D2ModelWidget::showEvent(QShowEvent *e)
 {
 	e->accept();
-	QRealDialog::showEvent(e);
 	if (mFirstShow) {
 		onFirstShow();
 	}
-
 	mFirstShow = false;
 }
 
@@ -402,68 +377,49 @@ QPainterPath const D2ModelWidget::robotBoundingPolygon(QPointF const &coord
 void D2ModelWidget::addWall(bool on)
 {
 	if (!on) {
-		setNoneStatus();
+		mDrawingAction = enums::drawingAction::none;
+		mMouseClicksCount = 0;
 		return;
 	}
 
-	setHighlightOneButton(mUi->wallButton);
-	setCursorTypeForDrawing(enums::cursorType::drawWall);
 	mDrawingAction = enums::drawingAction::wall;
+	setHighlightOneButton(mUi->wallButton);
 }
 
 void D2ModelWidget::addLine(bool on)
 {
 	if (!on) {
-		setNoneStatus();
+		mDrawingAction = enums::drawingAction::none;
+		mMouseClicksCount = 0;
 		return;
 	}
 
-	setHighlightOneButton(mUi->lineButton);
-	setCursorTypeForDrawing(enums::cursorType::drawLine);
 	mDrawingAction = enums::drawingAction::line;
+	setHighlightOneButton(mUi->lineButton);
 }
 
 void D2ModelWidget::addStylus(bool on)
 {
 	if (!on) {
-		setNoneStatus();
+		mDrawingAction = enums::drawingAction::none;
+		mMouseClicksCount = 0;
 		return;
 	}
 
-	setHighlightOneButton(mUi->stylusButton);
-	setCursorTypeForDrawing(enums::cursorType::drawStylus);
 	mDrawingAction = enums::drawingAction::stylus;
+	setHighlightOneButton(mUi->stylusButton);
 }
 
 void D2ModelWidget::addEllipse(bool on)
 {
 	if (!on) {
-		setNoneStatus();
+		mDrawingAction = enums::drawingAction::none;
+		mMouseClicksCount = 0;
 		return;
 	}
 
-	setHighlightOneButton(mUi->ellipseButton);
-	setCursorTypeForDrawing(enums::cursorType::drawEllipse);
 	mDrawingAction = enums::drawingAction::ellipse;
-}
-
-void D2ModelWidget::setNoneButton()
-{
-	setHighlightOneButton(mUi->noneButton);
-	setNoneStatus();
-}
-
-void D2ModelWidget::setNoneStatus()
-{
-	mDrawingAction = enums::drawingAction::none;
-	mMouseClicksCount = 0;
-	setCursorTypeForDrawing(mNoneCursorType);
-}
-
-void D2ModelWidget::setCursorTypeForDrawing(enums::cursorType::CursorType type)
-{
-	mCursorType = type;
-	mUi->graphicsView->setCursor(cursorTypeToCursor(mCursorType));
+	setHighlightOneButton(mUi->ellipseButton);
 }
 
 void D2ModelWidget::clearScene(bool removeRobot)
@@ -623,7 +579,9 @@ void D2ModelWidget::reshapeEllipse(QGraphicsSceneMouseEvent *event)
 
 void D2ModelWidget::mousePressed(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	mUi->graphicsView->setCursor(cursorTypeToCursor(mCursorType));
+	if (mCursorType == enums::cursorType::hand) {
+		mUi->graphicsView->setCursor(Qt::ClosedHandCursor);
+	}
 
 	mRobot->checkSelection();
 	foreach (SensorItem *sensor, mSensors) {
@@ -633,8 +591,7 @@ void D2ModelWidget::mousePressed(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	QPointF const position = mouseEvent->scenePos();
-	processDragMode();
-
+	processDragMode(mDrawingAction);
 	switch (mDrawingAction) {
 	case enums::drawingAction::wall: {
 		if (!mRobot->realBoundingRect().intersects(QRectF(position, position))) {
@@ -695,7 +652,7 @@ void D2ModelWidget::mouseMoved(QGraphicsSceneMouseEvent *mouseEvent)
 	}
 
 	bool needUpdate = true;
-	processDragMode();
+	processDragMode(mDrawingAction);
 	switch (mDrawingAction){
 	case enums::drawingAction::wall:
 		reshapeWall(mouseEvent);
@@ -723,7 +680,9 @@ void D2ModelWidget::mouseMoved(QGraphicsSceneMouseEvent *mouseEvent)
 
 void D2ModelWidget::mouseReleased(QGraphicsSceneMouseEvent *mouseEvent)
 {
-	mUi->graphicsView->setCursor(cursorTypeToCursor(mCursorType));
+	if (mCursorType == enums::cursorType::hand) {
+		mUi->graphicsView->setCursor(Qt::OpenHandCursor);
+	}
 
 	mRobot->checkSelection();
 	foreach (SensorItem *sensor, mSensors) {
@@ -732,31 +691,35 @@ void D2ModelWidget::mouseReleased(QGraphicsSceneMouseEvent *mouseEvent)
 		}
 	}
 
-	processDragMode();
+	processDragMode(mDrawingAction);
 
 	switch (mDrawingAction){
 	case enums::drawingAction::wall: {
 		reshapeWall(mouseEvent);
 		mCurrentWall = NULL;
 		mMouseClicksCount = 0;
+		mDrawingAction = enums::drawingAction::none;
 		break;
 	}
 	case enums::drawingAction::line: {
 		reshapeLine(mouseEvent);
 		mCurrentLine = NULL;
 		mMouseClicksCount = 0;
+		mDrawingAction = enums::drawingAction::none;
 		break;
 	}
 	case enums::drawingAction::stylus: {
 		reshapeStylus(mouseEvent);
 		mCurrentStylus = NULL;
 		mMouseClicksCount = 0;
+		mDrawingAction = enums::drawingAction::none;
 		break;
 	}
 	case enums::drawingAction::ellipse: {
 		reshapeEllipse(mouseEvent);
 		mCurrentEllipse = NULL;
 		mMouseClicksCount = 0;
+		mDrawingAction = enums::drawingAction::none;
 		break;
 	}
 	default:
@@ -764,6 +727,10 @@ void D2ModelWidget::mouseReleased(QGraphicsSceneMouseEvent *mouseEvent)
 		break;
 	}
 
+	mUi->wallButton->setChecked(false);
+	mUi->lineButton->setChecked(false);
+	mUi->stylusButton->setChecked(false);
+	mUi->ellipseButton->setChecked(false);
 	mScene->setMoveFlag(mouseEvent);
 
 	mScene->update();
@@ -965,9 +932,8 @@ void D2ModelWidget::changePenWidth(int width)
 	mScene->update();
 }
 
-void D2ModelWidget::changePenColor(int textIndex)
+void D2ModelWidget::changePenColor(const QString &text)
 {
-	QString text = mUi->penColorComboBox->colorByIndex(textIndex).name();
 	mScene->setPenColorItems(text);
 	foreach (AbstractItem *item, selectedColorItems()) {
 		item->setPenColor(text);
@@ -1047,7 +1013,6 @@ void D2ModelWidget::disableRunStopButtons()
 void D2ModelWidget::closeEvent(QCloseEvent *event)
 {
 	Q_UNUSED(event)
-	serializeParameters();
 	emit d2WasClosed();
 }
 
@@ -1117,11 +1082,10 @@ void D2ModelWidget::enableRobotFollowing(bool on)
 
 void D2ModelWidget::setCursorType(enums::cursorType::CursorType cursor)
 {
-	mNoneCursorType = cursor;
-	mCursorType = mNoneCursorType;
+	mCursorType = cursor;
 	qReal::SettingsManager::setValue("2dCursorType", cursor);
 	mUi->graphicsView->setDragMode(cursorTypeToDragType(cursor));
-	mUi->graphicsView->setCursor(cursorTypeToCursor(cursor));
+	mUi->graphicsView->setCursor(cursorTypeToShape(cursor));
 }
 
 void D2ModelWidget::changeNoiseSettings()
@@ -1167,10 +1131,6 @@ QGraphicsView::DragMode D2ModelWidget::cursorTypeToDragType(enums::cursorType::C
 {
 	switch(type) {
 	case enums::cursorType::NoDrag:
-	case enums::cursorType::drawEllipse:
-	case enums::cursorType::drawLine:
-	case enums::cursorType::drawStylus:
-	case enums::cursorType::drawWall:
 		return QGraphicsView::NoDrag;
 	case enums::cursorType::hand:
 		return QGraphicsView::ScrollHandDrag;
@@ -1181,37 +1141,30 @@ QGraphicsView::DragMode D2ModelWidget::cursorTypeToDragType(enums::cursorType::C
 	}
 }
 
-QCursor D2ModelWidget::cursorTypeToCursor(enums::cursorType::CursorType type) const
+Qt::CursorShape D2ModelWidget::cursorTypeToShape(enums::cursorType::CursorType type) const
 {
 	switch(type) {
 	case enums::cursorType::NoDrag:
-		return QCursor(Qt::ArrowCursor);
+		return Qt::ArrowCursor;
 	case enums::cursorType::hand:
-		return QCursor(Qt::OpenHandCursor);
+		return Qt::OpenHandCursor;
 	case enums::cursorType::multiselection:
-		return QCursor(Qt::ArrowCursor);
-	case enums::cursorType::drawLine:
-		return QCursor(QPixmap(":/icons/2d_drawLineCursor.png"), 0, 0);
-	case enums::cursorType::drawWall:
-		return QCursor(QPixmap(":/icons/2d_drawWallCursor.png"), 0, 0);
-	case enums::cursorType::drawEllipse:
-		return QCursor(QPixmap(":/icons/2d_drawEllipseCursor.png"), 0, 0);
-	case enums::cursorType::drawStylus:
-		return QCursor(QPixmap(":/icons/2d_drawStylusCursor.png"), 0, 0);
+		return Qt::ArrowCursor;
 	default:
 		return Qt::ArrowCursor;
 	}
 }
 
-void D2ModelWidget::processDragMode()
+void D2ModelWidget::processDragMode(int mode)
 {
-	mUi->graphicsView->setDragMode(cursorTypeToDragType(mCursorType));
+	mUi->graphicsView->setDragMode(mode
+			? QGraphicsView::NoDrag
+			: cursorTypeToDragType(mCursorType));
 }
 
 void D2ModelWidget::onHandCursorButtonToggled(bool on)
 {
 	if (on) {
-		setHighlightOneButton(mUi->handCursorButton);
 		setCursorType(enums::cursorType::hand);
 	}
 }
@@ -1219,14 +1172,13 @@ void D2ModelWidget::onHandCursorButtonToggled(bool on)
 void D2ModelWidget::onMultiselectionCursorButtonToggled(bool on)
 {
 	if (on) {
-		setHighlightOneButton(mUi->multiselectionCursorButton);
 		setCursorType(enums::cursorType::multiselection);
 	}
 }
 
 void D2ModelWidget::syncCursorButtons()
 {
-	switch(mNoneCursorType) {
+	switch(mCursorType) {
 	case enums::cursorType::hand:
 		mUi->handCursorButton->setChecked(true);
 		break;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <QtWidgets/QWidget>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QSplitter>
 
 #include "mainwindow/palette/paletteTreeWidget.h"
@@ -9,7 +11,7 @@ namespace gui {
 
 /// Represents a widget with two palettes: current selected language palette
 /// (which is visible always) and time-to-time appearing user palette
-class PaletteTreeWidgets : public QSplitter
+class PaletteTreeWidgets : public QWidget
 {
 public:
 	PaletteTreeWidgets(PaletteTree &parent, MainWindow *mainWindow
@@ -40,8 +42,8 @@ public:
 	void saveConfiguration(QString const &title) const;
 
 private:
-	void initWidgets();
-	void initWidget(PaletteTreeWidget * const tree);
+	void initWidget();
+	void initWidget(PaletteTreeWidget * const tree, QSplitter * const splitter);
 	void initEditorTree();
 	void initUserTree();
 

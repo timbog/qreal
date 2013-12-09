@@ -1,6 +1,6 @@
 #pragma once
 
-#include <converters/templateParametrizedMultiConverter.h>
+#include "base/converters/templateParametrizedMultiConverter.h"
 
 namespace qReal {
 namespace robots {
@@ -11,7 +11,7 @@ namespace converters {
 class TrikEnginePortsConverter : public TemplateParametrizedMultiConverter
 {
 public:
-	explicit TrikEnginePortsConverter(QString const &pathToTemplates);
+	TrikEnginePortsConverter(QString const &pathToTemplates);
 
 	virtual QStringList convert(QString const &data) const;
 };

@@ -58,7 +58,7 @@ QsciSciCallTip::~QsciSciCallTip()
 // Paint a call tip.
 void QsciSciCallTip::paintEvent(QPaintEvent *)
 {
-    QSCI_SCI_NAMESPACE(Surface) *surfaceWindow = QSCI_SCI_NAMESPACE(Surface)::Allocate(SC_TECHNOLOGY_DEFAULT);
+    QSCI_SCI_NAMESPACE(Surface) *surfaceWindow = QSCI_SCI_NAMESPACE(Surface)::Allocate();
 
     if (!surfaceWindow)
         return;
@@ -123,7 +123,7 @@ QsciSciListBox::QsciSciListBox(QWidget *parent, QsciListBoxQt *lbx_)
 {
     setAttribute(Qt::WA_StaticContents);
 
-#if defined(Q_OS_WIN)
+#if defined(Q_WS_WIN32)
     setWindowFlags(Qt::Tool|Qt::FramelessWindowHint);
 
     // This stops the main widget losing focus when the user clicks on this one

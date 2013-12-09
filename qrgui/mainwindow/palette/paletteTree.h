@@ -43,7 +43,7 @@ public:
 	*/
 	void deleteEditor(Id const &id);
 	QComboBox* comboBox() const;
-	QList<QString> editorsNames() const;
+	QVector<QString> editorsNames() const;
 	Id currentEditor() const;
 
 	/// Set item with such id as active in ComboBox.
@@ -131,11 +131,11 @@ private:
 	/// Button that changes palette representation.
 	QToolButton *mChangeRepresentation;
 
-	/// List with all editor's trees.
-	QList<PaletteTreeWidgets *> mEditorsTrees;
+	/// Vector with all editor's trees.
+	QVector <PaletteTreeWidgets *> mEditorsTrees;
 
-	/// List with all editor's names.
-	QList<QString> mEditorsNames;
+	/// Vector with all editor's names.
+	QVector <QString> mEditorsNames;
 
 	/// Combobox with editors.
 	QComboBox *mComboBox;

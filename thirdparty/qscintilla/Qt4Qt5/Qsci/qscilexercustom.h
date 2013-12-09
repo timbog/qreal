@@ -30,8 +30,8 @@
 extern "C++" {
 #endif
 
-#include <Qsci/qsciglobal.h>
-#include <Qsci/qscilexer.h>
+#include "qsciglobal.h"
+#include "qscilexer.h"
 
 
 class QsciScintilla;

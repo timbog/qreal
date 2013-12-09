@@ -4,8 +4,7 @@ MiniMap::MiniMap(QWidget *parent)
 		: QGraphicsView(parent)
 		, mEditorView(NULL)
 		, mMode(None)
-{
-}
+{}
 
 void MiniMap::init(qReal::MainWindow *window)
 {
@@ -120,9 +119,9 @@ void MiniMap::resizeEvent(QResizeEvent *event)
 void MiniMap::drawForeground(QPainter *painter, QRectF const &rect)
 {
 	QGraphicsView::drawForeground(painter, rect);
-	painter->setPen(Qt::darkYellow);
+	painter->setPen(Qt::yellow);
 
-	if (mEditorView) {
+	if (mEditorView != NULL) {
 		mEditorViewRect = getNewRect();
 	}
 	drawNonExistentAreas(painter, rect);

@@ -63,7 +63,6 @@ HEADERS = \
 	./Qsci/qscilexercustom.h \
 	./Qsci/qscilexerproperties.h \
 	./Qsci/qscilexerpython.h \
-	./Qsci/qscilexercpp.h \
 	./Qsci/qscimacro.h \
 	./Qsci/qsciprinter.h \
 	./Qsci/qscistyle.h \
@@ -110,7 +109,7 @@ HEADERS = \
 	../src/SVector.h \
 	../src/UniConversion.h \
 	../src/ViewStyle.h \
-        ../src/XPM.h \
+	../src/XPM.h \
 
 SOURCES = \
 	qsciscintilla.cpp \
@@ -122,9 +121,8 @@ SOURCES = \
 	qscidocument.cpp \
 	qscilexer.cpp \
 	qscilexercustom.cpp \
-        qscilexerproperties.cpp \
-        qscilexerpython.cpp \
-	qscilexercpp.cpp \
+	qscilexerproperties.cpp \
+	qscilexerpython.cpp \
 	qscimacro.cpp \
 	qsciprinter.cpp \
 	qscistyle.cpp \
@@ -134,7 +132,6 @@ SOURCES = \
 	PlatQt.cpp \
 	ScintillaQt.cpp \
 	../lexers/LexPython.cpp \
-	../lexers/LexCPP.cpp \
 	../lexlib/Accessor.cpp \
 	../lexlib/CharacterSet.cpp \
 	../lexlib/LexerBase.cpp \
@@ -166,7 +163,7 @@ SOURCES = \
 	../src/Style.cpp \
 	../src/UniConversion.cpp \
 	../src/ViewStyle.cpp \
-        ../src/XPM.cpp \
+	../src/XPM.cpp \
 
 TRANSLATIONS = \
 	qscintilla_ru.ts \

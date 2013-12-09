@@ -6,8 +6,6 @@
 #include <QtWidgets/QCheckBox>
 #include <QtCore/QSignalMapper>
 
-#include <qrutils/qRealDialog.h>
-
 #include "models/logicalModelAssistApi.h"
 
 namespace Ui {
@@ -15,7 +13,7 @@ namespace Ui {
 }
 
 /// Class that manages ui of find & replace menu.
-class FindReplaceDialog : public utils::QRealDialog
+class FindReplaceDialog : public QDialog
 {
 	Q_OBJECT
 

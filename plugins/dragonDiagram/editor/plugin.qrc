@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file>generated/shapes/DragonActionNodeClass.sdf</file>
+	<file>generated/shapes/DragonDiagramNodeClass.sdf</file>
+	<file>generated/shapes/DragonFieldTitleNodeClass.sdf</file>
+	<file>generated/shapes/DragonFlowClass.sdf</file>
+</qresource>
+</RCC>

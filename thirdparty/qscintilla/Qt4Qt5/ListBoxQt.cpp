@@ -48,7 +48,7 @@ void QsciListBoxQt::SetFont(QSCI_SCI_NAMESPACE(Font) &font)
 
 
 void QsciListBoxQt::Create(QSCI_SCI_NAMESPACE(Window) &parent, int,
-        QSCI_SCI_NAMESPACE(Point), int, bool unicodeMode, int)
+        QSCI_SCI_NAMESPACE(Point), int, bool unicodeMode)
 {
     utf8 = unicodeMode;
 
@@ -247,8 +247,7 @@ void QsciListBoxQt::RegisterRGBAImage(int type, int, int,
 {
     QPixmap pm;
 
-    pm = QPixmap::fromImage(*reinterpret_cast<const QImage *>(pixelsImage));
-
+    pm.convertFromImage(*reinterpret_cast<const QImage *>(pixelsImage));
     xset.insert(type, pm);
 }
 

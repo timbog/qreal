@@ -4,24 +4,29 @@
 <context>
     <name>QObject</name>
     <message>
+        <location filename="generator/trikRobotGenerator.cpp" line="102"/>
         <source>There is nothing to generate, diagram doesn&apos;t have Initial Node</source>
-        <translation type="obsolete">Генерация невозможна, на диаграмме нет начальных блоков</translation>
+        <translation>Генерация невозможна, на диаграмме нет начальных блоков</translation>
     </message>
     <message>
+        <location filename="generator/trikRobotGenerator.cpp" line="107"/>
         <source>Too many initial nodes, generation aborted</source>
-        <translation type="obsolete">Слишком много начальных узлов, генерация невозможна</translation>
+        <translation>Слишком много начальных узлов, генерация невозможна</translation>
     </message>
     <message>
+        <location filename="generator/generators/simpleElementGenerator.cpp" line="48"/>
         <source>There is no outgoing connected element with no final node!</source>
-        <translation type="obsolete">Отсутствует исходящий элемент!</translation>
+        <translation>Отсутствует исходящий элемент!</translation>
     </message>
     <message>
+        <location filename="generator/generators/simpleElementGenerator.cpp" line="75"/>
         <source>There are more than 1 outgoing connected elements with simple robot element!</source>
-        <translation type="obsolete">Обнаружено более 1 исходящей связи!</translation>
+        <translation>Обнаружено более 1 исходящей связи!</translation>
     </message>
     <message>
+        <location filename="generator/trikRobotGenerator.cpp" line="67"/>
         <source>There is no opened diagram</source>
-        <translation type="obsolete">Сначала откройте диаграмму </translation>
+        <translation>Сначала откройте диаграмму </translation>
     </message>
     <message>
         <source>The comment block with incomming liks detected!</source>
@@ -42,35 +47,6 @@
     <message>
         <source>Generator JUST does not work in this case.</source>
         <translation type="obsolete">Данная диаграмма слишком сложна для генерации.</translation>
-    </message>
-</context>
-<context>
-    <name>qReal::robots::generators::trik::TrikGeneratorPlugin</name>
-    <message>
-        <location filename="trikGeneratorPlugin.cpp" line="33"/>
-        <source>Generate TRIK code</source>
-        <translation>Генерировать код для ТРИК</translation>
-    </message>
-    <message>
-        <location filename="trikGeneratorPlugin.cpp" line="37"/>
-        <source>Upload program</source>
-        <translation>Загрузить программу</translation>
-    </message>
-    <message>
-        <location filename="trikGeneratorPlugin.cpp" line="41"/>
-        <source>Run program</source>
-        <translation>Загрузить и выполнить программу</translation>
-    </message>
-    <message>
-        <location filename="trikGeneratorPlugin.cpp" line="45"/>
-        <source>Stop robot</source>
-        <translation>Остановить робот</translation>
-    </message>
-    <message>
-        <location filename="trikGeneratorPlugin.cpp" line="66"/>
-        <location filename="trikGeneratorPlugin.cpp" line="90"/>
-        <source>No connection to robot</source>
-        <translation>Нет соединения с роботом, проверьте настройки, проверьте, включён ли робот</translation>
     </message>
 </context>
 <context>
@@ -154,24 +130,30 @@
 <context>
     <name>robots::trikGenerator::TrikGeneratorPlugin</name>
     <message>
+        <location filename="trikGeneratorPlugin.cpp" line="39"/>
         <source>Generate TRIK code</source>
-        <translation type="obsolete">Генерировать код для ТРИК</translation>
+        <translation>Генерировать код для ТРИК</translation>
     </message>
     <message>
+        <location filename="trikGeneratorPlugin.cpp" line="43"/>
         <source>Upload program</source>
-        <translation type="obsolete">Загрузить программу</translation>
+        <translation>Загрузить программу</translation>
     </message>
     <message>
+        <location filename="trikGeneratorPlugin.cpp" line="47"/>
         <source>Run program</source>
-        <translation type="obsolete">Загрузить и выполнить программу</translation>
+        <translation>Загрузить и выполнить программу</translation>
     </message>
     <message>
+        <location filename="trikGeneratorPlugin.cpp" line="51"/>
         <source>Stop robot</source>
-        <translation type="obsolete">Остановить робот</translation>
+        <translation>Остановить робот</translation>
     </message>
     <message>
+        <location filename="trikGeneratorPlugin.cpp" line="94"/>
+        <location filename="trikGeneratorPlugin.cpp" line="118"/>
         <source>No connection to robot</source>
-        <translation type="obsolete">Нет соединения с роботом, проверьте настройки, проверьте, включён ли робот</translation>
+        <translation>Нет соединения с роботом, проверьте настройки, проверьте, включён ли робот</translation>
     </message>
 </context>
 </TS>

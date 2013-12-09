@@ -32,7 +32,7 @@ extern "C++" {
 
 #include <qstring.h>
 
-#include <Qsci/qsciglobal.h>
+#include "qsciglobal.h"
 
 
 class QsciScintillaBase;

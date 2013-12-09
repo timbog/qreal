@@ -22,4 +22,5 @@ QVariant FunctionBlock::evaluate(const QString &propertyName)
 		emit failure(); /*разобраться с этой хренотой*/
 	}
 	return 0;
+
 }

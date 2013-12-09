@@ -9,6 +9,7 @@
 
 #include "view/editorView.h"
 #include "mainwindow/mainWindow.h"
+#include "dialogs/metamodelingOnFly/propertiesDialog.h"
 
 #include "controller/commands/createElementCommand.h"
 #include "controller/commands/createGroupCommand.h"
@@ -110,7 +111,7 @@ void EditorViewScene::printElementsOfRootDiagram()
 
 void EditorViewScene::initMouseMoveManager()
 {
-	if (!mMVIface || !mMVIface->graphicalAssistApi() || mMouseMovementManager) {
+	if (!mMVIface || !mMVIface->graphicalAssistApi()) {
 		return;
 	}
 
@@ -1228,6 +1229,23 @@ void EditorViewScene::setMainWindow(qReal::MainWindow *mainWindow)
 qReal::MainWindow *EditorViewScene::mainWindow() const
 {
 	return mWindow;
+}
+
+void EditorViewScene::changePropertiesActionTriggered()
+{
+	QAction const * const action = static_cast<QAction const *>(sender());
+	Id const id = action->data().value<Id>();
+	PropertiesDialog * const propertiesDialog = new PropertiesDialog(*mWindow, mWindow->editorManager(), id);
+	propertiesDialog->setModal(true);
+	propertiesDialog->show();
+}
+
+void EditorViewScene::changeAppearanceActionTriggered()
+{
+	QAction const * const action = static_cast<QAction const *>(sender());
+	Id const id = action->data().value<Id>();
+	QString const propertyValue = mWindow->editorManager().shape(id);
+	mWindow->openShapeEditor(id, propertyValue, &(mWindow->editorManager()));
 }
 
 void EditorViewScene::drawBackground(QPainter *painter, const QRectF &rect)

@@ -172,9 +172,8 @@ public:
     //! most lexers.
     virtual int defaultStyle() const;
 
-    //! Returns the descriptive name for style number \a style.  For a valid
-    //! style number for this language a non-empty QString must be returned.
-    //! If the style number is invalid then an empty QString must be returned.
+    //! Returns the descriptive name for style number \a style.  If the
+    //! style is invalid for this language then an empty QString is returned.
     //! This is intended to be used in user preference dialogs.
     virtual QString description(int style) const = 0;
 

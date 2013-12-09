@@ -6,13 +6,12 @@
 using namespace qReal;
 using namespace gui;
 
-CodeEditor::CodeEditor(QWidget *parent): QMainWindow(parent)
+CodeEditor::CodeEditor(QWidget *parent): QMainWindow(parent), mCodeArea(this)
 {
 	setCentralWidget(&mCodeArea);
 }
 
-CodeEditor::CodeEditor(QString const &filename, QWidget *parent): QMainWindow(parent)
-{
+CodeEditor::CodeEditor(QString const &filename, QWidget *parent): QMainWindow(parent), mCodeArea(this) {
 	setCentralWidget(&mCodeArea);
 	QFile file(filename);
 	QTextStream *inStream = 0;
@@ -22,11 +21,11 @@ CodeEditor::CodeEditor(QString const &filename, QWidget *parent): QMainWindow(pa
 	}
 
 	if (inStream) {
-		mCodeArea.setText(inStream->readAll());
+		mCodeArea.document()->setPlainText(inStream->readAll());
 	}
 }
 
 void CodeEditor::setHighlightedLineNumbers(const QList<int>& lineNumbers)
 {
-	Q_UNUSED(lineNumbers);
+	mCodeArea.setHighlightedLineNumbers(lineNumbers);
 }
