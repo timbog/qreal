@@ -12,7 +12,7 @@ bool Application::notify(QObject * receiver, QEvent * event)
 {
 	if (event->type() == QEvent::MouseButtonPress)
 	{
-		TipShower::Instance()->hideTip();
+		TipShower::instance()->currentTip();
 	}
 	return QApplication::notify(receiver, event);
 }

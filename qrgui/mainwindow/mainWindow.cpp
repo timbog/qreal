@@ -143,7 +143,7 @@ MainWindow::MainWindow(QString const &fileToOpen)
 	// beacuse of total event loop blocking by plugins. So waiting for main
 	// window initialization complete and then loading plugins.
 	QTimer::singleShot(50, this, SLOT(initPluginsAndStartDialog()));
-	TipShower::Instance()->firstTip();
+	TipShower::instance()->currentTip();
 }
 
 void MainWindow::connectActions()
