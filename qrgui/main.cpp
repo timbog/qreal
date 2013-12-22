@@ -6,6 +6,7 @@
 #include "mainwindow/application.h"
 
 using namespace qReal;
+using namespace application;
 
 void clearConfig()
 {

@@ -53,9 +53,11 @@
 
 #include "hotKeyManager/hotKeyManager.h"
 
-#include "tipShower.h"
+#include "mainwindow/tipShower.h"
+
 using namespace qReal;
 using namespace qReal::commands;
+using namespace tipShower;
 
 QString const unsavedDir = "unsaved";
 
@@ -143,7 +145,10 @@ MainWindow::MainWindow(QString const &fileToOpen)
 	// beacuse of total event loop blocking by plugins. So waiting for main
 	// window initialization complete and then loading plugins.
 	QTimer::singleShot(50, this, SLOT(initPluginsAndStartDialog()));
-	TipShower::instance()->currentTip();
+	if (SettingsManager::value("firstLaunch").toBool())
+	{
+		TipShower::instance()->currentTip();
+	}
 }
 
 void MainWindow::connectActions()
@@ -267,6 +272,7 @@ MainWindow::~MainWindow()
 	delete mErrorReporter;
 	mUi->paletteTree->saveConfiguration();
 	SettingsManager::instance()->saveData();
+	TipShower::instance();
 	delete mRecentProjectsMenu;
 	delete mRecentProjectsMapper;
 	delete mModels;
@@ -300,6 +306,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	SettingsManager::setValue("maximized", isMaximized());
 	SettingsManager::setValue("size", size());
 	SettingsManager::setValue("pos", pos());
+	TipShower::instance()->hideTip();
 }
 
 void MainWindow::loadPlugins()
@@ -2095,3 +2102,4 @@ void MainWindow::setVersion(QString const &version)
 	// TODO: update title
 	SettingsManager::setValue("version", version);
 }
+
